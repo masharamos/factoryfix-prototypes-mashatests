@@ -1,0 +1,1143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ONE-5408 — AI Recruiter Templates: Admin Governance & Ownership</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ff-green: #53D58B;
+      --ff-purple: #6C40E5;
+      --ff-purple-dark: #5F30D1;
+      --ff-washed-green: #F1FCF5;
+      --ff-washed-purple: #F4F4FE;
+      --ff-purple-light: #ECEAFD;
+      --ff-black-blue: #0F172A;
+      --ff-white: #FFFFFF;
+      --ff-success: #159B54;
+      --ff-caution: #C7A432;
+      --ff-critical: #CF3E3E;
+      --ff-base-40: #F1F5F9;
+      --ff-base-60: #E8F0F5;
+      --ff-base-100: #CBD5E1;
+      --ff-base-200: #BAC5D6;
+      --ff-base-400: #94A3B8;
+      --ff-base-700: #73839B;
+      --ff-base-800: #64748B;
+      --ff-base-820: #475569;
+      --ff-base-840: #334155;
+      --ff-base-860: #1E293B;
+      --ff-notification-pink: #F83D6A;
+      --ff-primary-50: #DEFAEA;
+      --ff-primary-100: #BEF4D5;
+      --ff-primary-800: #184F32;
+      --ff-shadow-resting: 0 1px 3px rgba(15,23,42,0.08);
+      --ff-shadow-hover: 0 4px 12px rgba(15,23,42,0.12);
+      --ff-shadow-card: 0px 1px 2px -1px rgba(13,10,44,0.1), 0px 12px 16px -4px rgba(13,10,44,0.03), 0px 4px 6px -2px rgba(13,10,44,0.03);
+      --ff-shadow-dropdown: 0px 16px 64px -24px rgba(0,0,0,0.2), 0px 1px 2px -1px rgba(0,0,0,0.2), 0px 8px 40px -16px rgba(0,0,0,0.1);
+      --font-heading: 'Inter', sans-serif;
+      --font-body: 'Inter', sans-serif;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: var(--font-body);
+      font-size: 16px;
+      line-height: 24px;
+      color: var(--ff-black-blue);
+      background: var(--ff-white);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .app-shell { display: flex; height: 100vh; overflow: hidden; }
+
+    /* ---- Sidebar ---- */
+    .sidebar {
+      background: var(--ff-black-blue); color: white; flex-shrink: 0;
+      display: flex; flex-direction: column; align-items: center;
+      justify-content: space-between; padding: 8px; width: 64px;
+    }
+    .sidebar-top, .sidebar-bottom {
+      display: flex; flex-direction: column; align-items: center;
+    }
+    .sidebar-bottom { width: 48px; }
+    .drawer-item {
+      display: flex; height: 48px; width: 48px; align-items: center;
+      justify-content: center; cursor: pointer; border-radius: 8px;
+      transition: background 150ms ease; position: relative;
+    }
+    .drawer-item:hover { background: rgba(255,255,255,0.08); }
+    .drawer-item-active { background: var(--ff-purple); }
+    .drawer-item-active:hover { background: var(--ff-purple); }
+    .drawer-item svg {
+      width: 24px; height: 24px; stroke: var(--ff-base-200); stroke-width: 2; fill: none;
+      stroke-linecap: round; stroke-linejoin: round; color: var(--ff-base-200);
+    }
+    .drawer-item-active svg { stroke: white; color: white; }
+    .drawer-item:hover svg { stroke: white; color: white; }
+    .sidebar-logo {
+      display: flex; height: 48px; width: 48px; align-items: center;
+      justify-content: center; position: relative; text-decoration: none;
+    }
+    .notification-badge {
+      position: absolute; right: 8px; top: 6px;
+      display: flex; height: 16px; width: 16px; align-items: center;
+      justify-content: center; border-radius: 9999px;
+      background: var(--ff-notification-pink); color: white;
+      font-size: 8px; font-weight: 800;
+    }
+    .job-slots-section {
+      margin-bottom: 8px; border-top: 1px solid var(--ff-base-840);
+      border-bottom: 1px solid var(--ff-base-840);
+      padding: 16px 0; width: 100%;
+    }
+    .job-slots-inner {
+      display: flex; flex-direction: column; align-items: center;
+      width: 100%; font-size: 10px;
+    }
+    .job-slots-inner .label { font-weight: 700; color: white; }
+    .job-slots-inner .count { color: white; }
+    .drawer-item-bottom {
+      display: flex; height: 48px; width: 48px; align-items: center;
+      justify-content: center; margin-bottom: 8px;
+    }
+    .drawer-item-bottom svg {
+      width: 24px; height: 24px; stroke: var(--ff-base-200); stroke-width: 2; fill: none;
+      stroke-linecap: round; stroke-linejoin: round;
+    }
+    .user-avatar {
+      display: flex; height: 48px; width: 48px; align-items: center;
+      justify-content: center; cursor: pointer;
+    }
+    .avatar-text {
+      display: flex; height: 32px; width: 32px; align-items: center;
+      justify-content: center; border-radius: 9999px; background: var(--ff-primary-100);
+    }
+    .avatar-text span { font-size: 12px; font-weight: 700; color: var(--ff-primary-800); }
+
+    /* ---- Main Content ---- */
+    .main-content {
+      flex: 1; background: #F9F9FF; overflow-y: auto; padding: 24px 48px 48px;
+    }
+
+    /* Header */
+    .page-header {
+      display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 24px;
+    }
+    .page-header h1 {
+      font-family: var(--font-heading); font-size: 24px; font-weight: 800;
+      line-height: 28px; color: var(--ff-black-blue);
+    }
+    .page-header p {
+      font-size: 16px; color: var(--ff-base-820); margin-top: 4px; line-height: 24px;
+    }
+    .btn-new-recruiter {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--ff-purple); color: white; border: 1px solid var(--ff-purple);
+      padding: 8px 16px; border-radius: 6px; font-size: 14px; font-weight: 600;
+      cursor: pointer; white-space: nowrap; letter-spacing: 0.28px;
+      transition: background 150ms ease;
+    }
+    .btn-new-recruiter:hover { background: var(--ff-purple-dark); }
+    .btn-new-recruiter svg { width: 20px; height: 20px; stroke: white; stroke-width: 2; fill: none; }
+
+    /* Tabs */
+    .tabs {
+      display: flex; gap: 16px; border-bottom: 0.5px solid rgba(0,0,0,0.1);
+      margin-bottom: 32px;
+    }
+    .tab {
+      padding: 4px 0 8px; font-size: 14px; cursor: pointer; position: relative;
+      color: var(--ff-base-800); font-weight: 400; transition: color 150ms;
+      border: none; background: none; font-family: var(--font-body);
+    }
+    .tab.active {
+      color: var(--ff-purple); font-weight: 700;
+      border-bottom: 2px solid var(--ff-purple-dark);
+    }
+    .tab:hover { color: var(--ff-purple); }
+
+    /* Admin toggle */
+    .admin-toggle {
+      display: flex; align-items: center; gap: 10px; margin-bottom: 24px;
+      padding: 10px 16px; background: var(--ff-purple-light); border-radius: 8px;
+      font-size: 13px; color: var(--ff-black-blue);
+    }
+    .admin-toggle .badge {
+      background: var(--ff-purple); color: white; font-size: 11px; font-weight: 700;
+      padding: 2px 8px; border-radius: 4px;
+    }
+    .toggle-switch {
+      position: relative; width: 36px; height: 20px; cursor: pointer;
+    }
+    .toggle-switch input { opacity: 0; width: 0; height: 0; }
+    .toggle-slider {
+      position: absolute; inset: 0; background: var(--ff-base-200); border-radius: 10px;
+      transition: background 200ms;
+    }
+    .toggle-slider::before {
+      content: ''; position: absolute; width: 16px; height: 16px;
+      left: 2px; bottom: 2px; background: white; border-radius: 50%;
+      transition: transform 200ms;
+    }
+    .toggle-switch input:checked + .toggle-slider { background: var(--ff-purple); }
+    .toggle-switch input:checked + .toggle-slider::before { transform: translateX(16px); }
+
+    /* Cards Grid */
+    .cards-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+      gap: 24px;
+    }
+
+    /* Recruiter Card */
+    .recruiter-card {
+      background: white; border-radius: 16px; overflow: hidden;
+      box-shadow: var(--ff-shadow-card); transition: box-shadow 200ms;
+    }
+    .recruiter-card:hover { box-shadow: var(--ff-shadow-hover); }
+
+    .card-header {
+      padding: 24px; color: white; position: relative;
+    }
+    .card-header.purple {
+      background: linear-gradient(90deg, #AE35F7 15.7%, #5F30D1 71%);
+    }
+    .card-header.teal {
+      background: linear-gradient(90deg, #055274 30%, #53D58B 120%);
+    }
+    .card-header.blue {
+      background: linear-gradient(90deg, #1E3A5F 20%, #4A90D9 110%);
+    }
+
+    .card-header-top {
+      display: flex; align-items: center; justify-content: space-between; gap: 8px;
+    }
+    .card-header-left { display: flex; align-items: center; gap: 8px; flex: 1; min-width: 0; }
+    .card-title {
+      font-size: 18px; font-weight: 800; line-height: 28px; white-space: nowrap;
+      overflow: hidden; text-overflow: ellipsis;
+    }
+    .card-badge-default {
+      background: var(--ff-primary-100); color: var(--ff-primary-800);
+      font-size: 12px; font-weight: 700; padding: 4px 8px; border-radius: 40px;
+      white-space: nowrap; flex-shrink: 0;
+    }
+    .card-badge-team {
+      background: rgba(255,255,255,0.2); color: white;
+      font-size: 12px; font-weight: 700; padding: 4px 8px; border-radius: 40px;
+      white-space: nowrap; flex-shrink: 0;
+    }
+    .card-description {
+      font-size: 16px; line-height: 24px; margin-top: 4px;
+      display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .card-ownership {
+      margin-top: 8px; display: flex; flex-direction: column; gap: 2px;
+    }
+    .card-owner {
+      font-size: 12px; line-height: 18px; opacity: 0.85;
+    }
+    .card-edited {
+      font-size: 12px; line-height: 18px; opacity: 0.65;
+    }
+
+    /* 3-dot menu */
+    .menu-trigger {
+      width: 28px; height: 28px; display: flex; align-items: center; justify-content: center;
+      cursor: pointer; border-radius: 6px; transition: background 150ms;
+      background: transparent; border: none; flex-shrink: 0;
+    }
+    .menu-trigger:hover { background: rgba(255,255,255,0.2); }
+    .menu-trigger svg { width: 20px; height: 20px; fill: white; stroke: none; }
+
+    /* Card Body */
+    .card-body { padding: 16px 24px 24px; }
+    .card-settings { display: flex; flex-direction: column; gap: 16px; }
+    .card-setting {
+      display: flex; justify-content: space-between; align-items: center;
+      font-size: 14px; line-height: 21px;
+    }
+    .card-setting-label { color: var(--ff-base-800); }
+    .card-setting-value { font-weight: 700; color: var(--ff-black-blue); }
+
+    .card-footer {
+      padding: 16px 24px; border-top: 1px solid rgba(0,0,0,0.05);
+      display: flex; align-items: center; gap: 8px;
+    }
+    .card-footer svg { width: 24px; height: 24px; stroke: var(--ff-base-800); stroke-width: 2; fill: none; }
+    .card-footer span { font-size: 14px; font-weight: 700; color: var(--ff-base-800); }
+
+    /* Dropdown menu */
+    .dropdown-menu {
+      position: absolute; top: calc(100% - 16px); right: 24px; z-index: 100;
+      background: white; border-radius: 6px; overflow: hidden;
+      box-shadow: var(--ff-shadow-dropdown); min-width: 180px;
+      display: none;
+    }
+    .dropdown-menu.open { display: flex; flex-direction: column; }
+    .dropdown-item {
+      padding: 8px 12px; font-size: 12px; color: var(--ff-black-blue);
+      cursor: pointer; transition: background 100ms; border: none;
+      background: white; text-align: left; font-family: var(--font-body);
+      line-height: 18px; display: flex; align-items: center; gap: 8px;
+    }
+    .dropdown-item:hover { background: var(--ff-purple-light); font-weight: 700; }
+    .dropdown-item.destructive { color: var(--ff-critical); }
+    .dropdown-item.destructive:hover { background: #FFF4F4; }
+    .dropdown-divider { height: 1px; background: var(--ff-base-100); margin: 2px 0; }
+    .dropdown-item svg {
+      width: 16px; height: 16px; stroke: currentColor; stroke-width: 2; fill: none;
+      flex-shrink: 0;
+    }
+
+    /* ---- Modals ---- */
+    .modal-overlay {
+      position: fixed; inset: 0; background: rgba(15,23,42,0.4);
+      display: none; align-items: center; justify-content: center; z-index: 1000;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal {
+      background: white; border-radius: 12px; max-width: 480px; width: 100%;
+      padding: 32px; animation: modalIn 200ms ease;
+    }
+    @keyframes modalIn {
+      from { opacity: 0; transform: scale(0.95); }
+      to { opacity: 1; transform: scale(1); }
+    }
+    .modal h2 {
+      font-size: 20px; font-weight: 700; margin-bottom: 8px;
+    }
+    .modal p.subtitle {
+      font-size: 14px; color: var(--ff-base-800); line-height: 21px; margin-bottom: 24px;
+    }
+
+    /* Form elements */
+    .form-group { margin-bottom: 20px; }
+    .form-label {
+      display: block; font-size: 14px; font-weight: 500; margin-bottom: 8px;
+      color: var(--ff-black-blue);
+    }
+    .form-select {
+      width: 100%; padding: 12px 16px; border: 1px solid var(--ff-base-100);
+      border-radius: 6px; font-size: 16px; font-family: var(--font-body);
+      background: white; appearance: none; cursor: pointer;
+      background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='%2364748B' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat; background-position: right 16px center;
+    }
+    .form-select:focus { outline: none; border-color: var(--ff-purple); border-width: 2px; padding: 11px 15px; }
+    .form-helper {
+      font-size: 12px; color: var(--ff-base-800); margin-top: 6px; line-height: 18px;
+    }
+    .form-info-box {
+      background: #FFF4D8; border-radius: 8px; padding: 12px 16px;
+      font-size: 13px; color: var(--ff-base-820); line-height: 20px;
+      display: flex; gap: 8px; align-items: flex-start; margin-bottom: 24px;
+    }
+    .form-info-box svg {
+      width: 18px; height: 18px; stroke: var(--ff-caution); stroke-width: 2;
+      fill: none; flex-shrink: 0; margin-top: 1px;
+    }
+
+    /* Ownership radio */
+    .ownership-options { display: flex; gap: 12px; }
+    .ownership-option {
+      flex: 1; padding: 16px; border: 2px solid var(--ff-base-100); border-radius: 8px;
+      cursor: pointer; transition: all 150ms; text-align: center;
+    }
+    .ownership-option:hover { border-color: var(--ff-base-400); }
+    .ownership-option.selected { border-color: var(--ff-purple); background: var(--ff-washed-purple); }
+    .ownership-option .option-title {
+      font-size: 14px; font-weight: 700; margin-bottom: 4px;
+    }
+    .ownership-option .option-desc {
+      font-size: 12px; color: var(--ff-base-800); line-height: 16px;
+    }
+
+    /* Modal buttons */
+    .modal-actions {
+      display: flex; justify-content: flex-end; gap: 12px; margin-top: 24px;
+    }
+    .btn-cancel {
+      padding: 10px 20px; border: none; background: transparent;
+      color: var(--ff-base-800); font-size: 14px; font-weight: 600;
+      cursor: pointer; border-radius: 8px; font-family: var(--font-body);
+    }
+    .btn-cancel:hover { background: var(--ff-base-40); }
+    .btn-confirm {
+      padding: 10px 20px; border: none; background: var(--ff-purple);
+      color: white; font-size: 14px; font-weight: 600; cursor: pointer;
+      border-radius: 8px; font-family: var(--font-body); transition: background 150ms;
+    }
+    .btn-confirm:hover { background: var(--ff-purple-dark); }
+    .btn-confirm:disabled { opacity: 0.5; cursor: not-allowed; }
+    .btn-confirm.destructive { background: var(--ff-critical); }
+    .btn-confirm.destructive:hover { background: #B91F1F; }
+
+    /* Toast */
+    .toast {
+      position: fixed; top: 24px; right: 24px; z-index: 2000;
+      background: #D4F4E5; border-left: 4px solid var(--ff-success);
+      border-radius: 8px; padding: 14px 20px; display: flex; align-items: center; gap: 10px;
+      font-size: 14px; color: var(--ff-black-blue); box-shadow: var(--ff-shadow-hover);
+      transform: translateX(120%); transition: transform 300ms ease;
+      max-width: 400px;
+    }
+    .toast.show { transform: translateX(0); }
+    .toast svg {
+      width: 20px; height: 20px; stroke: var(--ff-success); stroke-width: 2; fill: none;
+      flex-shrink: 0;
+    }
+
+    /* Edit panel (slide-in) */
+    .edit-panel-overlay {
+      position: fixed; inset: 0; background: rgba(15,23,42,0.4);
+      display: none; z-index: 900;
+    }
+    .edit-panel-overlay.open { display: block; }
+    .edit-panel {
+      position: fixed; top: 0; right: -560px; width: 560px; height: 100vh;
+      background: white; z-index: 950; overflow-y: auto;
+      transition: right 300ms ease; box-shadow: -8px 0 32px rgba(0,0,0,0.12);
+    }
+    .edit-panel.open { right: 0; }
+    .edit-panel-header {
+      padding: 24px 32px; border-bottom: 1px solid var(--ff-base-100);
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .edit-panel-header h2 { font-size: 20px; font-weight: 700; }
+    .edit-close {
+      width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;
+      cursor: pointer; border-radius: 6px; border: none; background: transparent;
+    }
+    .edit-close:hover { background: var(--ff-base-40); }
+    .edit-close svg { width: 20px; height: 20px; stroke: var(--ff-base-800); stroke-width: 2; fill: none; }
+    .edit-panel-body { padding: 32px; }
+    .edit-panel-footer {
+      padding: 24px 32px; border-top: 1px solid var(--ff-base-100);
+      display: flex; justify-content: flex-end; gap: 12px;
+    }
+
+    /* User item in dropdown */
+    .user-item {
+      display: flex; align-items: center; gap: 10px; padding: 10px 16px;
+      cursor: pointer; border-radius: 6px; transition: background 100ms;
+    }
+    .user-item:hover { background: var(--ff-purple-light); }
+    .user-item.selected { background: var(--ff-purple-light); }
+    .user-item-avatar {
+      width: 32px; height: 32px; border-radius: 50%; display: flex;
+      align-items: center; justify-content: center; font-size: 12px; font-weight: 700;
+    }
+    .user-item-info { flex: 1; }
+    .user-item-name { font-size: 14px; font-weight: 600; }
+    .user-item-role { font-size: 12px; color: var(--ff-base-800); }
+    .user-item-check { width: 20px; height: 20px; display: none; }
+    .user-item.selected .user-item-check { display: block; }
+
+    /* User list in modal */
+    .user-list {
+      max-height: 240px; overflow-y: auto; border: 1px solid var(--ff-base-100);
+      border-radius: 8px; margin-bottom: 4px;
+    }
+
+    /* Annotations layer */
+    .annotation {
+      position: fixed; z-index: 3000; padding: 6px 10px;
+      background: #FFF4D8; border: 1px solid var(--ff-caution);
+      border-radius: 6px; font-size: 11px; font-weight: 600;
+      color: var(--ff-base-820); pointer-events: none;
+      display: none;
+    }
+
+    /* Prototype banner */
+    .proto-banner {
+      position: fixed; bottom: 0; left: 0; right: 0; z-index: 5000;
+      background: var(--ff-black-blue); color: white; padding: 10px 24px;
+      display: flex; align-items: center; justify-content: space-between;
+      font-size: 13px;
+    }
+    .proto-banner .left { display: flex; align-items: center; gap: 12px; }
+    .proto-banner .pill {
+      background: var(--ff-purple); padding: 3px 10px; border-radius: 12px;
+      font-weight: 700; font-size: 11px;
+    }
+    .proto-banner .actions { display: flex; gap: 8px; }
+    .proto-banner button {
+      padding: 5px 12px; border-radius: 6px; font-size: 12px; font-weight: 600;
+      cursor: pointer; font-family: var(--font-body); transition: all 100ms;
+    }
+    .proto-btn-outline {
+      background: transparent; border: 1px solid rgba(255,255,255,0.3); color: white;
+    }
+    .proto-btn-outline:hover { border-color: white; }
+    .proto-btn-outline.active {
+      background: var(--ff-purple); border-color: var(--ff-purple);
+    }
+  </style>
+</head>
+<body>
+
+<div class="app-shell">
+  <!-- Sidebar -->
+  <nav class="sidebar">
+    <div class="sidebar-top">
+      <a href="#" class="sidebar-logo" title="Home">
+        <svg viewBox="0 0 28 24" fill="none" style="width:27px;height:24px">
+          <path d="M27.7142 12L20.8571 24H7.14279L0.285645 12L7.14279 0H20.8571L27.7142 12Z" fill="#53D58B"/>
+          <path d="M13.9998 4.28564H18.2855L16.1426 8.14279L17.8569 11.9999H16.1426V19.7142H11.8569V8.14279L13.9998 4.28564Z" fill="#0F172A"/>
+        </svg>
+      </a>
+      <div class="drawer-item" title="Activity Feed">
+        <svg viewBox="0 0 25 24"><path d="M15.5 19C15.5 20.657 14.157 22 12.5 22C10.843 22 9.5 20.657 9.5 19M18.5 11.2C18.5 9.821 17.868 8.498 16.742 7.523C15.617 6.548 14.091 6 12.5 6C10.908 6 9.382 6.548 8.257 7.523C7.132 8.498 6.5 9.821 6.5 11.2C6.5 13.482 5.934 15.151 5.228 16.345C4.423 17.706 4.021 18.386 4.037 18.549C4.055 18.735 4.088 18.793 4.239 18.904C4.371 19 5.033 19 6.358 19H18.642C19.966 19 20.629 19 20.76 18.904C20.911 18.793 20.945 18.735 20.963 18.549C20.979 18.386 20.576 17.706 19.772 16.345C19.066 15.151 18.5 13.482 18.5 11.2Z"/></svg>
+        <span class="notification-badge">2</span>
+      </div>
+      <a href="#" class="drawer-item" title="Manage Jobs">
+        <svg viewBox="0 0 24 24"><path d="M16 7C16 6.07 16 5.605 15.898 5.224C15.62 4.188 14.812 3.38 13.776 3.102C13.395 3 12.93 3 12 3C11.07 3 10.605 3 10.224 3.102C9.188 3.38 8.38 4.188 8.102 5.224C8 5.605 8 6.07 8 7M5.2 21H18.8C19.92 21 20.48 21 20.908 20.782C21.284 20.59 21.59 20.284 21.782 19.908C22 19.48 22 18.92 22 17.8V10.2C22 9.08 22 8.52 21.782 8.092C21.59 7.716 21.284 7.41 20.908 7.218C20.48 7 19.92 7 18.8 7H5.2C4.08 7 3.52 7 3.092 7.218C2.716 7.41 2.41 7.716 2.218 8.092C2 8.52 2 9.08 2 10.2V17.8C2 18.92 2 19.48 2.218 19.908C2.41 20.284 2.716 20.59 3.092 20.782C3.52 21 4.08 21 5.2 21Z"/></svg>
+      </a>
+      <a href="#" class="drawer-item" title="Candidate Archive">
+        <svg viewBox="0 0 24 24"><path d="M14 23C14.552 23 15 22.552 15 22C15 21.448 14.552 21 14 21V23ZM11.064 5.583L10.358 6.291L11.064 5.583ZM3 20V7H1V20H3ZM4 6H9.652V4H4V6ZM10.358 6.291L11.796 7.723L13.207 6.306L11.769 4.874L10.358 6.291ZM13.913 8.597H22V6.597H13.913V8.597ZM14 21H4V23H14V21ZM9.652 6C9.917 6 10.171 6.105 10.358 6.291L11.769 4.874C11.207 4.314 10.446 4 9.652 4V6ZM3 7C3 6.448 3.448 6 4 6V4C2.343 4 1 5.343 1 7H3ZM1 20C1 21.657 2.343 23 4 23V21C3.448 21 3 20.552 3 20H1Z" fill="currentColor" stroke="none"/></svg>
+      </a>
+      <a href="#" class="drawer-item" title="Talent Search">
+        <svg viewBox="0 0 24 24"><path d="M12 15H8C6.136 15 5.204 15 4.469 15.305C3.489 15.711 2.71 16.489 2.304 17.469C2 18.204 2 19.136 2 21M13.5 7C13.5 9.209 11.709 11 9.5 11C7.291 11 5.5 9.209 5.5 7C5.5 4.791 7.291 3 9.5 3C11.709 3 13.5 4.791 13.5 7Z"/><path d="M19 18.5L21.5 21"/><circle cx="17.5" cy="16.5" r="2.5"/></svg>
+      </a>
+      <a href="#" class="drawer-item" title="Performance Dashboard">
+        <svg viewBox="0 0 24 24"><path d="M17.2 14C17.477 14 17.616 14 17.728 14.062C17.82 14.112 17.907 14.208 17.948 14.305C17.998 14.423 17.985 14.548 17.96 14.799C17.83 16.099 17.382 17.351 16.652 18.445C15.773 19.76 14.523 20.786 13.062 21.391C11.6 21.997 9.991 22.155 8.439 21.846C6.887 21.538 5.462 20.776 4.343 19.657C3.224 18.538 2.462 17.113 2.154 15.561C1.845 14.009 2.003 12.4 2.609 10.939C3.214 9.477 4.24 8.227 5.555 7.348C6.649 6.618 7.901 6.17 9.201 6.04C9.452 6.015 9.577 6.002 9.695 6.052C9.792 6.093 9.888 6.18 9.939 6.272C10 6.384 10 6.523 10 6.8V13.2C10 13.48 10 13.62 10.055 13.727C10.102 13.821 10.179 13.898 10.273 13.946C10.38 14 10.52 14 10.8 14H17.2Z"/><path d="M14 2.8C14 2.523 14 2.384 14.062 2.272C14.112 2.18 14.208 2.093 14.305 2.052C14.423 2.002 14.548 2.015 14.799 2.04C16.627 2.223 18.346 3.032 19.657 4.343C20.968 5.654 21.777 7.373 21.96 9.201C21.985 9.452 21.998 9.577 21.948 9.695C21.907 9.792 21.82 9.888 21.728 9.938C21.616 10 21.477 10 21.2 10H14.8C14.52 10 14.38 10 14.273 9.945C14.179 9.898 14.102 9.821 14.055 9.727C14 9.62 14 9.48 14 9.2V2.8Z"/></svg>
+      </a>
+      <div class="drawer-item" title="Labor Market Reports">
+        <svg viewBox="0 0 24 24"><path d="M2 4C2 2.895 2.895 2 4 2H6C7.105 2 8 2.895 8 4V22H2V4Z"/><path d="M8 14C8 12.895 8.895 12 10 12H12C13.105 12 14 12.895 14 14V22H8V14Z"/><path d="M14 19C14 17.895 14.895 17 16 17H18C19.105 17 20 17.895 20 19V22H14V19Z"/></svg>
+      </div>
+      <a href="#" class="drawer-item drawer-item-active" title="My AI Recruiting Team">
+        <svg viewBox="0 0 24 24"><path d="M12 15H8C6.136 15 5.204 15 4.469 15.305C3.489 15.711 2.71 16.489 2.304 17.469C2 18.204 2 19.136 2 21M15.5 3.291C16.966 3.884 18 5.321 18 7C18 8.679 16.966 10.116 15.5 10.709M13.5 7C13.5 9.209 11.709 11 9.5 11C7.291 11 5.5 9.209 5.5 7C5.5 4.791 7.291 3 9.5 3C11.709 3 13.5 4.791 13.5 7Z"/><path d="M20.364 11.051C20.436 11.094 20.491 11.16 20.521 11.239C20.551 11.318 20.554 11.405 20.529 11.486L19.22 15.875H21.636C21.707 15.875 21.777 15.896 21.836 15.937C21.895 15.977 21.942 16.034 21.97 16.101C21.998 16.169 22.007 16.243 21.995 16.315C21.982 16.387 21.95 16.454 21.901 16.507L16.083 22.882C16.027 22.944 15.952 22.984 15.871 22.996C15.789 23.008 15.706 22.992 15.635 22.949C15.564 22.907 15.509 22.84 15.479 22.761C15.45 22.682 15.446 22.595 15.471 22.514L16.78 18.125H14.364C14.293 18.125 14.223 18.104 14.164 18.063C14.105 18.023 14.058 17.966 14.03 17.899C14.002 17.831 13.993 17.757 14.006 17.685C14.018 17.613 14.05 17.546 14.099 17.493L19.917 11.118C19.973 11.056 20.048 11.016 20.129 11.004C20.21 10.992 20.293 11.009 20.364 11.051Z" fill="currentColor" stroke="none"/></svg>
+      </a>
+    </div>
+    <div class="sidebar-bottom">
+      <div class="job-slots-section">
+        <div class="job-slots-inner">
+          <span class="label">Job Slots</span>
+          <span class="count">3/3</span>
+        </div>
+      </div>
+      <div class="drawer-item" title="Help">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.09 9C9.325 8.332 9.789 7.768 10.4 7.409C11.011 7.049 11.728 6.918 12.427 7.038C13.125 7.159 13.757 7.524 14.206 8.066C14.656 8.609 14.894 9.293 14.875 9.995C14.875 12 11.875 13 11.875 13M12 17H12.01"/></svg>
+      </div>
+      <div class="drawer-item-bottom" title="Referral">
+        <svg viewBox="0 0 24 24" style="stroke:var(--ff-green)"><path d="M12 6V22M12 6H8.464C7.943 6 7.444 5.789 7.075 5.414C6.707 5.039 6.5 4.53 6.5 4C6.5 3.47 6.707 2.961 7.075 2.586C7.444 2.211 7.943 2 8.464 2C11.214 2 12 6 12 6ZM12 6H15.536C16.057 6 16.556 5.789 16.925 5.414C17.293 5.039 17.5 4.53 17.5 4C17.5 3.47 17.293 2.961 16.925 2.586C16.556 2.211 16.057 2 15.536 2C12.786 2 12 6 12 6ZM20 11V18.8C20 19.92 20 20.48 19.782 20.908C19.59 21.284 19.284 21.59 18.908 21.782C18.48 22 17.92 22 16.8 22H7.2C6.08 22 5.52 22 5.092 21.782C4.716 21.59 4.41 21.284 4.218 20.908C4 20.48 4 19.92 4 18.8V11M2 7.6V9.4C2 9.96 2 10.24 2.109 10.454C2.205 10.642 2.358 10.795 2.546 10.891C2.76 11 3.04 11 3.6 11H20.4C20.96 11 21.24 11 21.454 10.891C21.642 10.795 21.795 10.642 21.891 10.454C22 10.24 22 9.96 22 9.4V7.6C22 7.04 22 6.76 21.891 6.546C21.795 6.358 21.642 6.205 21.454 6.109C21.24 6 20.96 6 20.4 6H3.6C3.04 6 2.76 6 2.546 6.109C2.358 6.205 2.205 6.358 2.109 6.546C2 6.76 2 7.04 2 7.6Z"/></svg>
+      </div>
+      <div class="drawer-item" title="Invite Teammate" style="margin-bottom:8px">
+        <svg viewBox="0 0 24 24"><path d="M12 15.5H7.5C6.104 15.5 5.407 15.5 4.839 15.672C3.56 16.06 2.56 17.061 2.172 18.339C2 18.907 2 19.604 2 21M19 21V15M16 18H22M14.5 7.5C14.5 9.985 12.485 12 10 12C7.515 12 5.5 9.985 5.5 7.5C5.5 5.015 7.515 3 10 3C12.485 3 14.5 5.015 14.5 7.5Z"/></svg>
+      </div>
+      <div class="user-avatar" title="Account">
+        <div class="avatar-text"><span>AW</span></div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <div class="main-content" id="mainContent">
+    <!-- Page Header -->
+    <div class="page-header">
+      <div>
+        <h1>My AI Recruiting Team</h1>
+        <p>Create a team of AI recruiters that work 24/7 to find the best candidates for your jobs</p>
+      </div>
+      <button class="btn-new-recruiter" onclick="openEditPanel('new')">
+        <svg viewBox="0 0 20 20"><path d="M10 4V16M4 10H16" stroke-linecap="round"/></svg>
+        New AI recruiter
+      </button>
+    </div>
+
+    <!-- Admin toggle -->
+    <div class="admin-toggle">
+      <span class="badge">ADMIN</span>
+      <span>Viewing as <strong>Org Admin</strong> (Ashley McQueen)</span>
+      <label class="toggle-switch" style="margin-left:auto">
+        <input type="checkbox" id="adminToggle" checked onchange="toggleAdminView()">
+        <span class="toggle-slider"></span>
+      </label>
+      <span style="font-size:12px;color:var(--ff-base-800)">Admin view</span>
+    </div>
+
+    <!-- Tabs -->
+    <div class="tabs">
+      <button class="tab active" id="tabMy" onclick="switchTab('my')">My recruiters</button>
+      <button class="tab" id="tabTeam" onclick="switchTab('team')">Team recruiters</button>
+    </div>
+
+    <!-- My Recruiters Tab -->
+    <div id="myRecruiters" class="cards-grid">
+      <!-- Card 1: FactoryFix Default (Copilot) -->
+      <div class="recruiter-card">
+        <div class="card-header purple" style="position:relative">
+          <div class="card-header-top">
+            <div class="card-header-left">
+              <span class="card-title">Copilot</span>
+              <span class="card-badge-default">FactoryFix Default</span>
+            </div>
+            <button class="menu-trigger" onclick="toggleMenu(event, 'menu-copilot')">
+              <svg viewBox="0 0 20 20"><circle cx="10" cy="4" r="1.5" fill="white"/><circle cx="10" cy="10" r="1.5" fill="white"/><circle cx="10" cy="16" r="1.5" fill="white"/></svg>
+            </button>
+          </div>
+          <div class="card-description">AI-powered recruiter for skilled trades and manufacturing roles</div>
+          <div class="card-ownership">
+            <span class="card-owner">Owned by Ashley McQueen (you)</span>
+            <span class="card-edited">Last edited Mar 15 by Ashley McQueen</span>
+          </div>
+          <div class="dropdown-menu" id="menu-copilot">
+            <button class="dropdown-item" onclick="openEditPanel('copilot')">
+              <svg viewBox="0 0 16 16"><path d="M11.333 2.00004C11.508 1.82494 11.716 1.68605 11.945 1.59129C12.175 1.49653 12.421 1.44775 12.669 1.44775C12.918 1.44775 13.164 1.49653 13.393 1.59129C13.623 1.68605 13.831 1.82494 14.006 2.00004C14.181 2.17513 14.319 2.383 14.414 2.61236C14.509 2.84173 14.558 3.08745 14.558 3.33571C14.558 3.58397 14.509 3.82969 14.414 4.05905C14.319 4.28842 14.181 4.49628 14.006 4.67138L5.166 13.5114L1.5 14.5L2.489 10.8334L11.333 2.00004Z"/></svg>
+              Edit
+            </button>
+            <button class="dropdown-item" onclick="openTransferModal('Copilot')">
+              <svg viewBox="0 0 16 16"><path d="M5.333 9.333L2 6L5.333 2.667M2 6H10.667C11.374 6 12.052 6.281 12.552 6.781C13.053 7.281 13.333 7.96 13.333 8.667V13.333"/></svg>
+              Transfer ownership
+            </button>
+            <div class="dropdown-divider"></div>
+            <button class="dropdown-item destructive" onclick="openDeleteModal('Copilot')">
+              <svg viewBox="0 0 16 16"><path d="M2 4H14M12.667 4V13.333C12.667 14 12 14.667 11.333 14.667H4.667C4 14.667 3.333 14 3.333 13.333V4M5.333 4V2.667C5.333 2 6 1.333 6.667 1.333H9.333C10 1.333 10.667 2 10.667 2.667V4"/></svg>
+              Delete
+            </button>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-settings">
+            <div class="card-setting"><span class="card-setting-label">Tone:</span><span class="card-setting-value">Friendly & personal</span></div>
+            <div class="card-setting"><span class="card-setting-label">Persistence:</span><span class="card-setting-value">Pursue with common sense</span></div>
+            <div class="card-setting"><span class="card-setting-label">Thoroughness:</span><span class="card-setting-value">Screen for core qualifications</span></div>
+            <div class="card-setting"><span class="card-setting-label">Strictness:</span><span class="card-setting-value">Balanced</span></div>
+            <div class="card-setting"><span class="card-setting-label">Candidate focus:</span><span class="card-setting-value">Maximize your talent pipeline</span></div>
+          </div>
+        </div>
+        <div class="card-footer">
+          <svg viewBox="0 0 24 24"><path d="M16 7C16 6.07 16 5.605 15.898 5.224C15.62 4.188 14.812 3.38 13.776 3.102C13.395 3 12.93 3 12 3C11.07 3 10.605 3 10.224 3.102C9.188 3.38 8.38 4.188 8.102 5.224C8 5.605 8 6.07 8 7M5.2 21H18.8C19.92 21 20.48 21 20.908 20.782C21.284 20.59 21.59 20.284 21.782 19.908C22 19.48 22 18.92 22 17.8V10.2C22 9.08 22 8.52 21.782 8.092C21.59 7.716 21.284 7.41 20.908 7.218C20.48 7 19.92 7 18.8 7H5.2C4.08 7 3.52 7 3.092 7.218C2.716 7.41 2.41 7.716 2.218 8.092C2 8.52 2 9.08 2 10.2V17.8C2 18.92 2 19.48 2.218 19.908C2.41 20.284 2.716 20.59 3.092 20.782C3.52 21 4.08 21 5.2 21Z"/></svg>
+          <span>3 active jobs</span>
+        </div>
+      </div>
+
+      <!-- Card 2: Personal recruiter -->
+      <div class="recruiter-card">
+        <div class="card-header teal" style="position:relative">
+          <div class="card-header-top">
+            <div class="card-header-left">
+              <span class="card-title">Manufacturing Pro</span>
+            </div>
+            <button class="menu-trigger" onclick="toggleMenu(event, 'menu-mfg')">
+              <svg viewBox="0 0 20 20"><circle cx="10" cy="4" r="1.5" fill="white"/><circle cx="10" cy="10" r="1.5" fill="white"/><circle cx="10" cy="16" r="1.5" fill="white"/></svg>
+            </button>
+          </div>
+          <div class="card-description">Aggressive sourcer for high-volume manufacturing and warehouse positions</div>
+          <div class="card-ownership">
+            <span class="card-owner">Owned by Ashley McQueen (you)</span>
+            <span class="card-edited">Last edited Apr 2 by Ashley McQueen</span>
+          </div>
+          <div class="dropdown-menu" id="menu-mfg">
+            <button class="dropdown-item" onclick="openEditPanel('mfg')">
+              <svg viewBox="0 0 16 16"><path d="M11.333 2.00004C11.508 1.82494 11.716 1.68605 11.945 1.59129C12.175 1.49653 12.421 1.44775 12.669 1.44775C12.918 1.44775 13.164 1.49653 13.393 1.59129C13.623 1.68605 13.831 1.82494 14.006 2.00004C14.181 2.17513 14.319 2.383 14.414 2.61236C14.509 2.84173 14.558 3.08745 14.558 3.33571C14.558 3.58397 14.509 3.82969 14.414 4.05905C14.319 4.28842 14.181 4.49628 14.006 4.67138L5.166 13.5114L1.5 14.5L2.489 10.8334L11.333 2.00004Z"/></svg>
+              Edit
+            </button>
+            <button class="dropdown-item" onclick="openTransferModal('Manufacturing Pro')">
+              <svg viewBox="0 0 16 16"><path d="M5.333 9.333L2 6L5.333 2.667M2 6H10.667C11.374 6 12.052 6.281 12.552 6.781C13.053 7.281 13.333 7.96 13.333 8.667V13.333"/></svg>
+              Transfer ownership
+            </button>
+            <div class="dropdown-divider"></div>
+            <button class="dropdown-item destructive" onclick="openDeleteModal('Manufacturing Pro')">
+              <svg viewBox="0 0 16 16"><path d="M2 4H14M12.667 4V13.333C12.667 14 12 14.667 11.333 14.667H4.667C4 14.667 3.333 14 3.333 13.333V4M5.333 4V2.667C5.333 2 6 1.333 6.667 1.333H9.333C10 1.333 10.667 2 10.667 2.667V4"/></svg>
+              Delete
+            </button>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-settings">
+            <div class="card-setting"><span class="card-setting-label">Tone:</span><span class="card-setting-value">Direct & efficient</span></div>
+            <div class="card-setting"><span class="card-setting-label">Persistence:</span><span class="card-setting-value">Aggressive follow-up</span></div>
+            <div class="card-setting"><span class="card-setting-label">Thoroughness:</span><span class="card-setting-value">Quick screen only</span></div>
+            <div class="card-setting"><span class="card-setting-label">Strictness:</span><span class="card-setting-value">Lenient</span></div>
+            <div class="card-setting"><span class="card-setting-label">Candidate focus:</span><span class="card-setting-value">Maximize your talent pipeline</span></div>
+          </div>
+        </div>
+        <div class="card-footer">
+          <svg viewBox="0 0 24 24"><path d="M16 7C16 6.07 16 5.605 15.898 5.224C15.62 4.188 14.812 3.38 13.776 3.102C13.395 3 12.93 3 12 3C11.07 3 10.605 3 10.224 3.102C9.188 3.38 8.38 4.188 8.102 5.224C8 5.605 8 6.07 8 7M5.2 21H18.8C19.92 21 20.48 21 20.908 20.782C21.284 20.59 21.59 20.284 21.782 19.908C22 19.48 22 18.92 22 17.8V10.2C22 9.08 22 8.52 21.782 8.092C21.59 7.716 21.284 7.41 20.908 7.218C20.48 7 19.92 7 18.8 7H5.2C4.08 7 3.52 7 3.092 7.218C2.716 7.41 2.41 7.716 2.218 8.092C2 8.52 2 9.08 2 10.2V17.8C2 18.92 2 19.48 2.218 19.908C2.41 20.284 2.716 20.59 3.092 20.782C3.52 21 4.08 21 5.2 21Z"/></svg>
+          <span>1 active job</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Team Recruiters Tab -->
+    <div id="teamRecruiters" class="cards-grid" style="display:none">
+      <!-- Card: Lisa's template (onboarding-created, now team-owned) -->
+      <div class="recruiter-card">
+        <div class="card-header teal" style="position:relative">
+          <div class="card-header-top">
+            <div class="card-header-left">
+              <span class="card-title">Skilled Trades Sourcer</span>
+              <span class="card-badge-team">Team-owned</span>
+            </div>
+            <button class="menu-trigger admin-only" onclick="toggleMenu(event, 'menu-lisa')">
+              <svg viewBox="0 0 20 20"><circle cx="10" cy="4" r="1.5" fill="white"/><circle cx="10" cy="10" r="1.5" fill="white"/><circle cx="10" cy="16" r="1.5" fill="white"/></svg>
+            </button>
+          </div>
+          <div class="card-description">Thorough screener for CNC operators, welders, and maintenance techs</div>
+          <div class="card-ownership">
+            <span class="card-owner">Team-owned</span>
+            <span class="card-edited">Last edited Jan 12 by Lisa Glebus</span>
+          </div>
+          <div class="dropdown-menu" id="menu-lisa">
+            <button class="dropdown-item" onclick="openEditPanel('lisa')">
+              <svg viewBox="0 0 16 16"><path d="M11.333 2.00004C11.508 1.82494 11.716 1.68605 11.945 1.59129C12.175 1.49653 12.421 1.44775 12.669 1.44775C12.918 1.44775 13.164 1.49653 13.393 1.59129C13.623 1.68605 13.831 1.82494 14.006 2.00004C14.181 2.17513 14.319 2.383 14.414 2.61236C14.509 2.84173 14.558 3.08745 14.558 3.33571C14.558 3.58397 14.509 3.82969 14.414 4.05905C14.319 4.28842 14.181 4.49628 14.006 4.67138L5.166 13.5114L1.5 14.5L2.489 10.8334L11.333 2.00004Z"/></svg>
+              Edit
+            </button>
+            <button class="dropdown-item" onclick="openTransferModal('Skilled Trades Sourcer')">
+              <svg viewBox="0 0 16 16"><path d="M5.333 9.333L2 6L5.333 2.667M2 6H10.667C11.374 6 12.052 6.281 12.552 6.781C13.053 7.281 13.333 7.96 13.333 8.667V13.333"/></svg>
+              Transfer ownership
+            </button>
+            <div class="dropdown-divider"></div>
+            <button class="dropdown-item destructive" onclick="openDeleteModal('Skilled Trades Sourcer')">
+              <svg viewBox="0 0 16 16"><path d="M2 4H14M12.667 4V13.333C12.667 14 12 14.667 11.333 14.667H4.667C4 14.667 3.333 14 3.333 13.333V4M5.333 4V2.667C5.333 2 6 1.333 6.667 1.333H9.333C10 1.333 10.667 2 10.667 2.667V4"/></svg>
+              Delete
+            </button>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-settings">
+            <div class="card-setting"><span class="card-setting-label">Tone:</span><span class="card-setting-value">Professional & thorough</span></div>
+            <div class="card-setting"><span class="card-setting-label">Persistence:</span><span class="card-setting-value">Pursue with common sense</span></div>
+            <div class="card-setting"><span class="card-setting-label">Thoroughness:</span><span class="card-setting-value">Deep screening</span></div>
+            <div class="card-setting"><span class="card-setting-label">Strictness:</span><span class="card-setting-value">Strict</span></div>
+            <div class="card-setting"><span class="card-setting-label">Candidate focus:</span><span class="card-setting-value">Quality over quantity</span></div>
+          </div>
+        </div>
+        <div class="card-footer">
+          <svg viewBox="0 0 24 24"><path d="M16 7C16 6.07 16 5.605 15.898 5.224C15.62 4.188 14.812 3.38 13.776 3.102C13.395 3 12.93 3 12 3C11.07 3 10.605 3 10.224 3.102C9.188 3.38 8.38 4.188 8.102 5.224C8 5.605 8 6.07 8 7M5.2 21H18.8C19.92 21 20.48 21 20.908 20.782C21.284 20.59 21.59 20.284 21.782 19.908C22 19.48 22 18.92 22 17.8V10.2C22 9.08 22 8.52 21.782 8.092C21.59 7.716 21.284 7.41 20.908 7.218C20.48 7 19.92 7 18.8 7H5.2C4.08 7 3.52 7 3.092 7.218C2.716 7.41 2.41 7.716 2.218 8.092C2 8.52 2 9.08 2 10.2V17.8C2 18.92 2 19.48 2.218 19.908C2.41 20.284 2.716 20.59 3.092 20.782C3.52 21 4.08 21 5.2 21Z"/></svg>
+          <span>5 active jobs</span>
+        </div>
+      </div>
+
+      <!-- Card: Mark's template -->
+      <div class="recruiter-card">
+        <div class="card-header blue" style="position:relative">
+          <div class="card-header-top">
+            <div class="card-header-left">
+              <span class="card-title">Warehouse Pipeline</span>
+            </div>
+            <button class="menu-trigger admin-only" onclick="toggleMenu(event, 'menu-mark')">
+              <svg viewBox="0 0 20 20"><circle cx="10" cy="4" r="1.5" fill="white"/><circle cx="10" cy="10" r="1.5" fill="white"/><circle cx="10" cy="16" r="1.5" fill="white"/></svg>
+            </button>
+          </div>
+          <div class="card-description">High-volume recruiter for warehouse associates and forklift operators</div>
+          <div class="card-ownership">
+            <span class="card-owner">Owned by Mark Scoptur</span>
+            <span class="card-edited">Last edited Apr 5 by Mark Scoptur</span>
+          </div>
+          <div class="dropdown-menu" id="menu-mark">
+            <button class="dropdown-item" onclick="openEditPanel('mark')">
+              <svg viewBox="0 0 16 16"><path d="M11.333 2.00004C11.508 1.82494 11.716 1.68605 11.945 1.59129C12.175 1.49653 12.421 1.44775 12.669 1.44775C12.918 1.44775 13.164 1.49653 13.393 1.59129C13.623 1.68605 13.831 1.82494 14.006 2.00004C14.181 2.17513 14.319 2.383 14.414 2.61236C14.509 2.84173 14.558 3.08745 14.558 3.33571C14.558 3.58397 14.509 3.82969 14.414 4.05905C14.319 4.28842 14.181 4.49628 14.006 4.67138L5.166 13.5114L1.5 14.5L2.489 10.8334L11.333 2.00004Z"/></svg>
+              Edit
+            </button>
+            <button class="dropdown-item" onclick="openTransferModal('Warehouse Pipeline')">
+              <svg viewBox="0 0 16 16"><path d="M5.333 9.333L2 6L5.333 2.667M2 6H10.667C11.374 6 12.052 6.281 12.552 6.781C13.053 7.281 13.333 7.96 13.333 8.667V13.333"/></svg>
+              Transfer ownership
+            </button>
+            <div class="dropdown-divider"></div>
+            <button class="dropdown-item destructive" onclick="openDeleteModal('Warehouse Pipeline')">
+              <svg viewBox="0 0 16 16"><path d="M2 4H14M12.667 4V13.333C12.667 14 12 14.667 11.333 14.667H4.667C4 14.667 3.333 14 3.333 13.333V4M5.333 4V2.667C5.333 2 6 1.333 6.667 1.333H9.333C10 1.333 10.667 2 10.667 2.667V4"/></svg>
+              Delete
+            </button>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-settings">
+            <div class="card-setting"><span class="card-setting-label">Tone:</span><span class="card-setting-value">Friendly & personal</span></div>
+            <div class="card-setting"><span class="card-setting-label">Persistence:</span><span class="card-setting-value">Aggressive follow-up</span></div>
+            <div class="card-setting"><span class="card-setting-label">Thoroughness:</span><span class="card-setting-value">Quick screen only</span></div>
+            <div class="card-setting"><span class="card-setting-label">Strictness:</span><span class="card-setting-value">Lenient</span></div>
+            <div class="card-setting"><span class="card-setting-label">Candidate focus:</span><span class="card-setting-value">Maximize your talent pipeline</span></div>
+          </div>
+        </div>
+        <div class="card-footer">
+          <svg viewBox="0 0 24 24"><path d="M16 7C16 6.07 16 5.605 15.898 5.224C15.62 4.188 14.812 3.38 13.776 3.102C13.395 3 12.93 3 12 3C11.07 3 10.605 3 10.224 3.102C9.188 3.38 8.38 4.188 8.102 5.224C8 5.605 8 6.07 8 7M5.2 21H18.8C19.92 21 20.48 21 20.908 20.782C21.284 20.59 21.59 20.284 21.782 19.908C22 19.48 22 18.92 22 17.8V10.2C22 9.08 22 8.52 21.782 8.092C21.59 7.716 21.284 7.41 20.908 7.218C20.48 7 19.92 7 18.8 7H5.2C4.08 7 3.52 7 3.092 7.218C2.716 7.41 2.41 7.716 2.218 8.092C2 8.52 2 9.08 2 10.2V17.8C2 18.92 2 19.48 2.218 19.908C2.41 20.284 2.716 20.59 3.092 20.782C3.52 21 4.08 21 5.2 21Z"/></svg>
+          <span>2 active jobs</span>
+        </div>
+      </div>
+
+      <!-- Card: James's orphaned template -->
+      <div class="recruiter-card">
+        <div class="card-header teal" style="position:relative;opacity:0.85">
+          <div class="card-header-top">
+            <div class="card-header-left">
+              <span class="card-title">Onboarding Template</span>
+            </div>
+            <button class="menu-trigger admin-only" onclick="toggleMenu(event, 'menu-james')">
+              <svg viewBox="0 0 20 20"><circle cx="10" cy="4" r="1.5" fill="white"/><circle cx="10" cy="10" r="1.5" fill="white"/><circle cx="10" cy="16" r="1.5" fill="white"/></svg>
+            </button>
+          </div>
+          <div class="card-description">Default template created during account setup</div>
+          <div class="card-ownership">
+            <span class="card-owner" style="color:#FFD6D6">Owned by James Thompson (deactivated)</span>
+            <span class="card-edited">Last edited Nov 3, 2025 by James Thompson</span>
+          </div>
+          <div class="dropdown-menu" id="menu-james">
+            <button class="dropdown-item" onclick="openEditPanel('james')">
+              <svg viewBox="0 0 16 16"><path d="M11.333 2.00004C11.508 1.82494 11.716 1.68605 11.945 1.59129C12.175 1.49653 12.421 1.44775 12.669 1.44775C12.918 1.44775 13.164 1.49653 13.393 1.59129C13.623 1.68605 13.831 1.82494 14.006 2.00004C14.181 2.17513 14.319 2.383 14.414 2.61236C14.509 2.84173 14.558 3.08745 14.558 3.33571C14.558 3.58397 14.509 3.82969 14.414 4.05905C14.319 4.28842 14.181 4.49628 14.006 4.67138L5.166 13.5114L1.5 14.5L2.489 10.8334L11.333 2.00004Z"/></svg>
+              Edit
+            </button>
+            <button class="dropdown-item" onclick="openTransferModal('Onboarding Template')">
+              <svg viewBox="0 0 16 16"><path d="M5.333 9.333L2 6L5.333 2.667M2 6H10.667C11.374 6 12.052 6.281 12.552 6.781C13.053 7.281 13.333 7.96 13.333 8.667V13.333"/></svg>
+              Transfer ownership
+            </button>
+            <div class="dropdown-divider"></div>
+            <button class="dropdown-item destructive" onclick="openDeleteModal('Onboarding Template')">
+              <svg viewBox="0 0 16 16"><path d="M2 4H14M12.667 4V13.333C12.667 14 12 14.667 11.333 14.667H4.667C4 14.667 3.333 14 3.333 13.333V4M5.333 4V2.667C5.333 2 6 1.333 6.667 1.333H9.333C10 1.333 10.667 2 10.667 2.667V4"/></svg>
+              Delete
+            </button>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-settings">
+            <div class="card-setting"><span class="card-setting-label">Tone:</span><span class="card-setting-value">Friendly & personal</span></div>
+            <div class="card-setting"><span class="card-setting-label">Persistence:</span><span class="card-setting-value">Pursue with common sense</span></div>
+            <div class="card-setting"><span class="card-setting-label">Thoroughness:</span><span class="card-setting-value">Screen for core qualifications</span></div>
+            <div class="card-setting"><span class="card-setting-label">Strictness:</span><span class="card-setting-value">Balanced</span></div>
+            <div class="card-setting"><span class="card-setting-label">Candidate focus:</span><span class="card-setting-value">Maximize your talent pipeline</span></div>
+          </div>
+        </div>
+        <div class="card-footer">
+          <svg viewBox="0 0 24 24"><path d="M16 7C16 6.07 16 5.605 15.898 5.224C15.62 4.188 14.812 3.38 13.776 3.102C13.395 3 12.93 3 12 3C11.07 3 10.605 3 10.224 3.102C9.188 3.38 8.38 4.188 8.102 5.224C8 5.605 8 6.07 8 7M5.2 21H18.8C19.92 21 20.48 21 20.908 20.782C21.284 20.59 21.59 20.284 21.782 19.908C22 19.48 22 18.92 22 17.8V10.2C22 9.08 22 8.52 21.782 8.092C21.59 7.716 21.284 7.41 20.908 7.218C20.48 7 19.92 7 18.8 7H5.2C4.08 7 3.52 7 3.092 7.218C2.716 7.41 2.41 7.716 2.218 8.092C2 8.52 2 9.08 2 10.2V17.8C2 18.92 2 19.48 2.218 19.908C2.41 20.284 2.716 20.59 3.092 20.782C3.52 21 4.08 21 5.2 21Z"/></svg>
+          <span>0 active jobs</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Transfer Ownership Modal -->
+<div class="modal-overlay" id="transferModal">
+  <div class="modal">
+    <h2>Transfer ownership</h2>
+    <p class="subtitle">Select a teammate to take ownership of <strong id="transferTemplateName"></strong>. This changes who manages this recruiter template. Jobs already using it won't change.</p>
+
+    <div class="form-group">
+      <label class="form-label">Transfer to</label>
+      <div class="user-list" id="userList">
+        <div class="user-item" onclick="selectUser(this, 'Lisa Glebus')">
+          <div class="user-item-avatar" style="background:#DEFAEA;color:#184F32">LG</div>
+          <div class="user-item-info">
+            <div class="user-item-name">Lisa Glebus</div>
+            <div class="user-item-role">Org Admin</div>
+          </div>
+          <svg class="user-item-check" viewBox="0 0 20 20" fill="none"><path d="M16.667 5L7.5 14.167L3.333 10" stroke="#6C40E5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <div class="user-item" onclick="selectUser(this, 'Mark Scoptur')">
+          <div class="user-item-avatar" style="background:#ECEAFD;color:#5F30D1">MS</div>
+          <div class="user-item-info">
+            <div class="user-item-name">Mark Scoptur</div>
+            <div class="user-item-role">Org Admin</div>
+          </div>
+          <svg class="user-item-check" viewBox="0 0 20 20" fill="none"><path d="M16.667 5L7.5 14.167L3.333 10" stroke="#6C40E5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <div class="user-item" onclick="selectUser(this, 'Miguel Rodriguez')">
+          <div class="user-item-avatar" style="background:#FFF4D8;color:#7B5B06">MR</div>
+          <div class="user-item-info">
+            <div class="user-item-name">Miguel Rodriguez</div>
+            <div class="user-item-role">Recruiter</div>
+          </div>
+          <svg class="user-item-check" viewBox="0 0 20 20" fill="none"><path d="M16.667 5L7.5 14.167L3.333 10" stroke="#6C40E5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <div class="user-item" onclick="selectUser(this, 'Sarah Chen')">
+          <div class="user-item-avatar" style="background:#D4F4E5;color:#1B7A45">SC</div>
+          <div class="user-item-info">
+            <div class="user-item-name">Sarah Chen</div>
+            <div class="user-item-role">Recruiter</div>
+          </div>
+          <svg class="user-item-check" viewBox="0 0 20 20" fill="none"><path d="M16.667 5L7.5 14.167L3.333 10" stroke="#6C40E5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-info-box">
+      <svg viewBox="0 0 20 20"><path d="M10 6.667V10M10 13.333H10.008M18.333 10C18.333 14.602 14.602 18.333 10 18.333C5.398 18.333 1.667 14.602 1.667 10C1.667 5.398 5.398 1.667 10 1.667C14.602 1.667 18.333 5.398 18.333 10Z"/></svg>
+      <span>Changes won't update jobs already using this recruiter unless you build that separately.</span>
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal('transferModal')">Cancel</button>
+      <button class="btn-confirm" id="transferConfirmBtn" disabled onclick="confirmTransfer()">Transfer ownership</button>
+    </div>
+  </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal-overlay" id="deleteModal">
+  <div class="modal">
+    <h2>Delete recruiter template</h2>
+    <p class="subtitle">Are you sure you want to delete <strong id="deleteTemplateName"></strong>? This action cannot be undone.</p>
+
+    <div class="form-info-box">
+      <svg viewBox="0 0 20 20"><path d="M10 6.667V10M10 13.333H10.008M18.333 10C18.333 14.602 14.602 18.333 10 18.333C5.398 18.333 1.667 14.602 1.667 10C1.667 5.398 5.398 1.667 10 1.667C14.602 1.667 18.333 5.398 18.333 10Z"/></svg>
+      <span>Jobs already using this recruiter will continue with their current settings. They won't be affected.</span>
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal('deleteModal')">Cancel</button>
+      <button class="btn-confirm destructive" onclick="confirmDelete()">Delete template</button>
+    </div>
+  </div>
+</div>
+
+<!-- Edit Panel (Slide-in) -->
+<div class="edit-panel-overlay" id="editOverlay" onclick="closeEditPanel()"></div>
+<div class="edit-panel" id="editPanel">
+  <div class="edit-panel-header">
+    <h2 id="editPanelTitle">Edit AI Recruiter</h2>
+    <button class="edit-close" onclick="closeEditPanel()">
+      <svg viewBox="0 0 20 20"><path d="M15 5L5 15M5 5L15 15" stroke-linecap="round"/></svg>
+    </button>
+  </div>
+  <div class="edit-panel-body">
+    <div class="form-group">
+      <label class="form-label">Display name</label>
+      <input class="form-input" id="editName" type="text" value="Copilot" style="width:100%;padding:12px 16px;border:1px solid var(--ff-base-100);border-radius:6px;font-size:16px;font-family:var(--font-body);outline:none">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Description</label>
+      <textarea id="editDesc" rows="3" style="width:100%;padding:12px 16px;border:1px solid var(--ff-base-100);border-radius:6px;font-size:16px;font-family:var(--font-body);outline:none;resize:vertical">AI-powered recruiter for skilled trades and manufacturing roles</textarea>
+    </div>
+
+    <!-- Ownership setting (admin-only) -->
+    <div class="form-group" id="ownershipSection">
+      <label class="form-label">Ownership <span style="font-size:12px;color:var(--ff-base-800);font-weight:400">(admin only)</span></label>
+      <div class="ownership-options">
+        <div class="ownership-option selected" onclick="selectOwnership(this, 'personal')">
+          <div class="option-title">Personal</div>
+          <div class="option-desc">Only you can edit this template</div>
+        </div>
+        <div class="ownership-option" onclick="selectOwnership(this, 'team')">
+          <div class="option-title">Team-owned</div>
+          <div class="option-desc">Org admins can edit this template</div>
+        </div>
+      </div>
+      <div class="form-helper">Team-owned recruiters can be edited by any org admin. Recommended for templates created during onboarding.</div>
+    </div>
+
+    <hr style="border:none;border-top:1px solid var(--ff-base-100);margin:24px 0">
+
+    <div class="form-group">
+      <label class="form-label">Tone</label>
+      <select class="form-select">
+        <option>Friendly & personal</option>
+        <option>Professional & thorough</option>
+        <option>Direct & efficient</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Persistence</label>
+      <select class="form-select">
+        <option>Pursue with common sense</option>
+        <option>Aggressive follow-up</option>
+        <option>Light touch</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Thoroughness</label>
+      <select class="form-select">
+        <option>Screen for core qualifications</option>
+        <option>Deep screening</option>
+        <option>Quick screen only</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Strictness</label>
+      <select class="form-select">
+        <option>Balanced</option>
+        <option>Strict</option>
+        <option>Lenient</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Candidate focus</label>
+      <select class="form-select">
+        <option>Maximize your talent pipeline</option>
+        <option>Quality over quantity</option>
+      </select>
+    </div>
+  </div>
+  <div class="edit-panel-footer">
+    <button class="btn-cancel" onclick="closeEditPanel()">Cancel</button>
+    <button class="btn-confirm" onclick="saveEdit()">Save changes</button>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast">
+  <svg viewBox="0 0 20 20"><path d="M16.667 5L7.5 14.167L3.333 10" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  <span id="toastMessage">Changes saved. Jobs already using this recruiter won't be updated.</span>
+</div>
+
+<!-- Prototype Control Banner -->
+<div class="proto-banner">
+  <div class="left">
+    <span class="pill">PROTOTYPE</span>
+    <span>ONE-5408 — AI Recruiter Templates: Admin Governance & Ownership</span>
+  </div>
+  <div class="actions">
+    <button class="proto-btn-outline active" onclick="setScenario('admin')">Admin view</button>
+    <button class="proto-btn-outline" onclick="setScenario('member')">Member view</button>
+  </div>
+</div>
+
+<script>
+  let selectedUser = null;
+  let currentTransferTemplate = '';
+  let currentDeleteTemplate = '';
+
+  // Close all menus when clicking outside
+  document.addEventListener('click', (e) => {
+    if (!e.target.closest('.menu-trigger') && !e.target.closest('.dropdown-menu')) {
+      document.querySelectorAll('.dropdown-menu').forEach(m => m.classList.remove('open'));
+    }
+  });
+
+  function toggleMenu(e, menuId) {
+    e.stopPropagation();
+    const menu = document.getElementById(menuId);
+    const wasOpen = menu.classList.contains('open');
+    document.querySelectorAll('.dropdown-menu').forEach(m => m.classList.remove('open'));
+    if (!wasOpen) menu.classList.add('open');
+  }
+
+  function switchTab(tab) {
+    document.getElementById('tabMy').classList.toggle('active', tab === 'my');
+    document.getElementById('tabTeam').classList.toggle('active', tab === 'team');
+    document.getElementById('myRecruiters').style.display = tab === 'my' ? 'grid' : 'none';
+    document.getElementById('teamRecruiters').style.display = tab === 'team' ? 'grid' : 'none';
+  }
+
+  function toggleAdminView() {
+    const isAdmin = document.getElementById('adminToggle').checked;
+    document.querySelectorAll('.admin-only').forEach(el => {
+      el.style.display = isAdmin ? '' : 'none';
+    });
+    document.getElementById('ownershipSection').style.display = isAdmin ? '' : 'none';
+    // Update scenario buttons
+    document.querySelectorAll('.proto-banner .proto-btn-outline').forEach(btn => {
+      btn.classList.remove('active');
+    });
+    if (isAdmin) {
+      document.querySelector('.proto-banner .proto-btn-outline:first-child').classList.add('active');
+    } else {
+      document.querySelector('.proto-banner .proto-btn-outline:last-child').classList.add('active');
+    }
+  }
+
+  function setScenario(scenario) {
+    document.getElementById('adminToggle').checked = scenario === 'admin';
+    toggleAdminView();
+    document.querySelectorAll('.proto-banner .proto-btn-outline').forEach(btn => btn.classList.remove('active'));
+    if (scenario === 'admin') {
+      document.querySelector('.proto-banner .proto-btn-outline:first-child').classList.add('active');
+    } else {
+      document.querySelector('.proto-banner .proto-btn-outline:last-child').classList.add('active');
+    }
+  }
+
+  // Transfer modal
+  function openTransferModal(templateName) {
+    currentTransferTemplate = templateName;
+    document.getElementById('transferTemplateName').textContent = templateName;
+    document.getElementById('transferModal').classList.add('open');
+    document.querySelectorAll('.dropdown-menu').forEach(m => m.classList.remove('open'));
+    // Reset selection
+    selectedUser = null;
+    document.querySelectorAll('.user-item').forEach(u => u.classList.remove('selected'));
+    document.getElementById('transferConfirmBtn').disabled = true;
+  }
+
+  function selectUser(el, name) {
+    document.querySelectorAll('.user-item').forEach(u => u.classList.remove('selected'));
+    el.classList.add('selected');
+    selectedUser = name;
+    document.getElementById('transferConfirmBtn').disabled = false;
+  }
+
+  function confirmTransfer() {
+    closeModal('transferModal');
+    showToast(`Ownership of "${currentTransferTemplate}" transferred to ${selectedUser}.`);
+  }
+
+  // Delete modal
+  function openDeleteModal(templateName) {
+    currentDeleteTemplate = templateName;
+    document.getElementById('deleteTemplateName').textContent = templateName;
+    document.getElementById('deleteModal').classList.add('open');
+    document.querySelectorAll('.dropdown-menu').forEach(m => m.classList.remove('open'));
+  }
+
+  function confirmDelete() {
+    closeModal('deleteModal');
+    showToast(`"${currentDeleteTemplate}" has been deleted.`);
+  }
+
+  function closeModal(id) {
+    document.getElementById(id).classList.remove('open');
+  }
+
+  // Edit panel
+  function openEditPanel(template) {
+    document.querySelectorAll('.dropdown-menu').forEach(m => m.classList.remove('open'));
+    const panel = document.getElementById('editPanel');
+    const overlay = document.getElementById('editOverlay');
+
+    if (template === 'new') {
+      document.getElementById('editPanelTitle').textContent = 'New AI Recruiter';
+      document.getElementById('editName').value = '';
+      document.getElementById('editDesc').value = '';
+    } else {
+      document.getElementById('editPanelTitle').textContent = 'Edit AI Recruiter';
+      // Pre-fill with template data
+      const names = {
+        copilot: 'Copilot',
+        mfg: 'Manufacturing Pro',
+        lisa: 'Skilled Trades Sourcer',
+        mark: 'Warehouse Pipeline',
+        james: 'Onboarding Template'
+      };
+      document.getElementById('editName').value = names[template] || '';
+    }
+
+    panel.classList.add('open');
+    overlay.classList.add('open');
+  }
+
+  function closeEditPanel() {
+    document.getElementById('editPanel').classList.remove('open');
+    document.getElementById('editOverlay').classList.remove('open');
+  }
+
+  function saveEdit() {
+    closeEditPanel();
+    showToast('Changes saved. Jobs already using this recruiter won\'t be updated.');
+  }
+
+  function selectOwnership(el, type) {
+    document.querySelectorAll('.ownership-option').forEach(o => o.classList.remove('selected'));
+    el.classList.add('selected');
+  }
+
+  // Toast
+  function showToast(message) {
+    const toast = document.getElementById('toast');
+    document.getElementById('toastMessage').textContent = message;
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 4000);
+  }
+
+  // Click overlay to close modals
+  document.querySelectorAll('.modal-overlay').forEach(overlay => {
+    overlay.addEventListener('click', (e) => {
+      if (e.target === overlay) overlay.classList.remove('open');
+    });
+  });
+</script>
+
+</body>
+</html>
