@@ -548,17 +548,6 @@
       </button>
     </div>
 
-    <!-- Admin toggle -->
-    <div class="admin-toggle">
-      <span class="badge">ADMIN</span>
-      <span>Viewing as <strong>Org Admin</strong> (Ashley McQueen)</span>
-      <label class="toggle-switch" style="margin-left:auto">
-        <input type="checkbox" id="adminToggle" checked onchange="toggleAdminView()">
-        <span class="toggle-slider"></span>
-      </label>
-      <span style="font-size:12px;color:var(--ff-base-800)">Admin view</span>
-    </div>
-
     <!-- Tabs -->
     <div class="tabs">
       <button class="tab active" id="tabMy" onclick="switchTab('my')">My recruiters</button>
@@ -973,17 +962,6 @@
   <span id="toastMessage">Changes saved. Jobs already using this recruiter won't be updated.</span>
 </div>
 
-<!-- Prototype Control Banner -->
-<div class="proto-banner">
-  <div class="left">
-    <span class="pill">PROTOTYPE</span>
-    <span>ONE-5408 — AI Recruiter Templates: Admin Governance & Ownership</span>
-  </div>
-  <div class="actions">
-    <button class="proto-btn-outline active" onclick="setScenario('admin')">Admin view</button>
-    <button class="proto-btn-outline" onclick="setScenario('member')">Member view</button>
-  </div>
-</div>
 
 <script>
   let selectedUser = null;
