@@ -1,0 +1,1149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mobile Companion — FactoryFix Prototype</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <style>
+    :root {
+      --ff-green: #53D58B;
+      --ff-purple: #6C40E5;
+      --ff-black: #0F172A;
+      --ff-washed-green: #F1FCF5;
+      --ff-washed-purple: #F4F4FE;
+      --ff-gray-bg: #F1F5F9;
+      --ff-border: #CBD5E1;
+      --ff-text-muted: #64748B;
+      --ff-text-secondary: #475569;
+      --ff-success: #159B54;
+      --ff-caution: #C7A432;
+      --ff-critical: #CF3E3E;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #E2E8F0;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* Desktop: side-by-side phone frames */
+    .desktop-layout {
+      display: flex;
+      gap: 48px;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 48px 24px;
+      min-height: 100vh;
+    }
+
+    .phone-frame {
+      width: 390px;
+      height: 844px;
+      border-radius: 36px;
+      border: 8px solid #1E293B;
+      background: #fff;
+      overflow: hidden;
+      position: relative;
+      flex-shrink: 0;
+      box-shadow: 0 25px 60px rgba(0,0,0,0.2), 0 0 0 1px rgba(0,0,0,0.05);
+    }
+
+    .phone-frame-label {
+      text-align: center;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--ff-text-muted);
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+
+    .phone-inner {
+      width: 100%;
+      height: 100%;
+      overflow-y: auto;
+      overflow-x: hidden;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    .phone-inner::-webkit-scrollbar { display: none; }
+    .phone-inner { -ms-overflow-style: none; scrollbar-width: none; }
+
+    /* Mobile: full bleed */
+    @media (max-width: 639px) {
+      body { background: #fff; }
+      .desktop-layout {
+        flex-direction: column;
+        padding: 0;
+        gap: 0;
+      }
+      .phone-frame {
+        width: 100%;
+        height: 100vh;
+        height: 100dvh;
+        border-radius: 0;
+        border: none;
+        box-shadow: none;
+      }
+      .phone-frame-label { display: none; }
+      .phone-frame.hidden-mobile { display: none; }
+    }
+
+    /* Status bar */
+    .status-bar {
+      background: var(--ff-black);
+      color: #fff;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 24px 4px;
+      font-size: 12px;
+      font-weight: 600;
+      flex-shrink: 0;
+    }
+
+    .status-bar-icons {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+    }
+
+    /* Shared header */
+    .header-dark {
+      background: var(--ff-black);
+      padding: 0 16px 12px;
+      flex-shrink: 0;
+    }
+
+    /* Inbox header */
+    .inbox-title-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 0 12px;
+    }
+
+    /* TODO: replace Inter 700 with Museo when font is available */
+    .inbox-title {
+      font-size: 17px;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .unread-badge {
+      background: var(--ff-green);
+      color: var(--ff-black);
+      font-size: 11px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 20px;
+    }
+
+    .search-bar {
+      background: #1E293B;
+      border: 1px solid #334155;
+      border-radius: 6px;
+      padding: 8px 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--ff-text-muted);
+      font-size: 13px;
+    }
+
+    .search-bar svg { flex-shrink: 0; }
+
+    /* List area */
+    .list-area {
+      background: var(--ff-gray-bg);
+      flex: 1;
+      overflow-y: auto;
+    }
+
+    .section-label {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--ff-text-muted);
+      padding: 16px 16px 8px;
+    }
+
+    /* Candidate row */
+    .candidate-row {
+      background: #fff;
+      padding: 12px 16px;
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      border-bottom: 0.5px solid var(--ff-border);
+      cursor: pointer;
+      min-height: 44px;
+      transition: background 0.1s;
+    }
+
+    .candidate-row:active { background: var(--ff-washed-green); }
+
+    .candidate-row.unread {
+      border-left: 3px solid var(--ff-green);
+      padding-left: 13px;
+    }
+
+    /* Avatar */
+    .avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 700;
+      color: #fff;
+      flex-shrink: 0;
+    }
+
+    /* Row content */
+    .row-content { flex: 1; min-width: 0; }
+
+    .row-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .row-name {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--ff-black);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .row-time {
+      font-size: 10px;
+      color: var(--ff-text-muted);
+      flex-shrink: 0;
+    }
+
+    .row-job {
+      font-size: 11px;
+      color: var(--ff-text-muted);
+      margin-top: 1px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .row-preview-line {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-top: 2px;
+    }
+
+    .row-preview {
+      font-size: 12px;
+      color: var(--ff-text-secondary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .row-preview.bold { font-weight: 600; color: var(--ff-black); }
+
+    .unread-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--ff-green);
+      flex-shrink: 0;
+    }
+
+    .score-line {
+      font-size: 12px;
+      color: var(--ff-text-secondary);
+      margin-top: 2px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .score-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .score-dot.green { background: var(--ff-success); }
+    .score-dot.yellow { background: var(--ff-caution); }
+    .score-dot.red { background: var(--ff-critical); }
+
+    /* ── Candidate Detail ── */
+
+    .detail-header {
+      background: var(--ff-black);
+      padding: 0 16px 0;
+      flex-shrink: 0;
+    }
+
+    .detail-top-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 0;
+    }
+
+    .back-btn {
+      color: var(--ff-green);
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+      padding: 4px 0;
+      min-height: 44px;
+      display: flex;
+      align-items: center;
+    }
+
+    .back-btn:active { opacity: 0.7; }
+
+    /* TODO: replace Inter 700 with Museo when font is available */
+    .detail-name {
+      font-size: 17px;
+      font-weight: 700;
+      color: #fff;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .stage-pill {
+      border: 1px solid var(--ff-green);
+      color: var(--ff-green);
+      font-size: 10px;
+      font-weight: 600;
+      padding: 2px 10px;
+      border-radius: 20px;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .detail-meta-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-bottom: 12px;
+    }
+
+    .detail-job {
+      font-size: 11px;
+      color: #94A3B8;
+    }
+
+    .score-badge {
+      background: var(--ff-success);
+      color: #fff;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 4px;
+      flex-shrink: 0;
+    }
+
+    /* Tabs */
+    .tab-bar {
+      display: flex;
+      gap: 4px;
+      padding: 0 16px 12px;
+      background: var(--ff-black);
+    }
+
+    .tab-btn {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 6px 14px;
+      border-radius: 20px;
+      border: none;
+      cursor: pointer;
+      transition: all 0.15s;
+      white-space: nowrap;
+    }
+
+    .tab-btn.active {
+      background: #fff;
+      color: var(--ff-black);
+    }
+
+    .tab-btn:not(.active) {
+      background: transparent;
+      color: #94A3B8;
+    }
+
+    .tab-btn:not(.active):active { color: #fff; }
+
+    /* Conversation */
+    .conversation-area {
+      flex: 1;
+      overflow-y: auto;
+      padding: 16px;
+      background: #fff;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .msg-group { display: flex; flex-direction: column; gap: 4px; }
+
+    .msg-label {
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--ff-text-muted);
+    }
+
+    .msg-label.ai {
+      color: var(--ff-purple);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .ai-badge {
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      background: var(--ff-washed-purple);
+      color: var(--ff-purple);
+      padding: 1px 6px;
+      border-radius: 4px;
+    }
+
+    .msg-label.candidate { text-align: left; }
+    .msg-label.recruiter { text-align: right; }
+
+    .bubble {
+      padding: 10px 14px;
+      font-size: 13px;
+      line-height: 1.45;
+      max-width: 85%;
+    }
+
+    .bubble.candidate {
+      background: var(--ff-gray-bg);
+      color: var(--ff-black);
+      border-radius: 12px 12px 12px 3px;
+      align-self: flex-start;
+    }
+
+    .bubble.ai {
+      background: var(--ff-washed-purple);
+      color: var(--ff-black);
+      border-radius: 12px 12px 12px 3px;
+      align-self: flex-start;
+    }
+
+    .bubble.recruiter {
+      background: var(--ff-black);
+      color: #fff;
+      border-radius: 12px 12px 3px 12px;
+      align-self: flex-end;
+    }
+
+    .msg-time {
+      font-size: 10px;
+      color: var(--ff-text-muted);
+    }
+
+    .msg-time.right { text-align: right; }
+
+    /* Reply bar */
+    .reply-bar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      background: #fff;
+      border-top: 0.5px solid var(--ff-border);
+      flex-shrink: 0;
+    }
+
+    .reply-input {
+      flex: 1;
+      background: var(--ff-gray-bg);
+      border: none;
+      border-radius: 20px;
+      padding: 10px 16px;
+      font-size: 13px;
+      font-family: inherit;
+      color: var(--ff-black);
+      outline: none;
+    }
+
+    .reply-input::placeholder { color: var(--ff-text-muted); }
+
+    .send-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: var(--ff-black);
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .send-btn:active { opacity: 0.7; }
+
+    /* Action sheet */
+    .action-sheet {
+      display: flex;
+      gap: 8px;
+      padding: 12px 16px;
+      background: #fff;
+      border-top: 0.5px solid var(--ff-border);
+      overflow-x: auto;
+      flex-shrink: 0;
+    }
+
+    .action-sheet::-webkit-scrollbar { display: none; }
+
+    .action-chip {
+      font-size: 12px;
+      font-weight: 600;
+      padding: 8px 16px;
+      border-radius: 20px;
+      border: none;
+      cursor: pointer;
+      white-space: nowrap;
+      min-height: 36px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-family: inherit;
+    }
+
+    .action-chip.primary {
+      background: var(--ff-black);
+      color: #fff;
+    }
+
+    .action-chip.secondary {
+      background: var(--ff-washed-purple);
+      color: var(--ff-purple);
+    }
+
+    .action-chip.outline {
+      background: #fff;
+      color: var(--ff-text-secondary);
+      border: 1px solid var(--ff-border);
+    }
+
+    .action-chip:active { opacity: 0.7; }
+
+    /* Stage dropdown */
+    .stage-picker {
+      background: #fff;
+      border-top: 0.5px solid var(--ff-border);
+      flex-shrink: 0;
+    }
+
+    .stage-picker-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 16px;
+      border-bottom: 0.5px solid var(--ff-border);
+    }
+
+    .stage-picker-close {
+      background: none;
+      border: none;
+      font-size: 16px;
+      color: var(--ff-text-muted);
+      cursor: pointer;
+      padding: 4px 8px;
+      min-height: 44px;
+      display: flex;
+      align-items: center;
+    }
+
+    .stage-option {
+      padding: 10px 16px;
+      font-size: 13px;
+      cursor: pointer;
+      border: none;
+      background: none;
+      width: 100%;
+      text-align: left;
+      font-family: inherit;
+      color: var(--ff-black);
+    }
+
+    .stage-option:active,
+    .stage-option:hover { background: var(--ff-washed-green); }
+
+    .stage-option.active {
+      color: var(--ff-purple);
+      font-weight: 600;
+    }
+
+    /* Resume tab */
+    .resume-area {
+      flex: 1;
+      overflow-y: auto;
+      padding: 16px;
+      background: #fff;
+    }
+
+    .resume-section {
+      margin-bottom: 24px;
+    }
+
+    .resume-section-title {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--ff-text-muted);
+      margin-bottom: 12px;
+    }
+
+    .exp-item {
+      margin-bottom: 12px;
+    }
+
+    .exp-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--ff-black);
+    }
+
+    .exp-company {
+      font-size: 12px;
+      color: var(--ff-text-secondary);
+    }
+
+    .exp-dates {
+      font-size: 11px;
+      color: var(--ff-text-muted);
+      margin-top: 2px;
+    }
+
+    .skills-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .skill-pill {
+      background: var(--ff-gray-bg);
+      color: var(--ff-text-secondary);
+      font-size: 12px;
+      font-weight: 500;
+      padding: 5px 12px;
+      border-radius: 20px;
+    }
+
+    .edu-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--ff-black);
+    }
+
+    .edu-school {
+      font-size: 12px;
+      color: var(--ff-text-secondary);
+    }
+
+    .edu-year {
+      font-size: 11px;
+      color: var(--ff-text-muted);
+      margin-top: 2px;
+    }
+
+    /* Contact tab */
+    .contact-area {
+      flex: 1;
+      overflow-y: auto;
+      padding: 16px;
+      background: #fff;
+    }
+
+    .contact-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 0;
+      border-bottom: 0.5px solid var(--ff-border);
+    }
+
+    .contact-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: var(--ff-gray-bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .contact-label {
+      font-size: 11px;
+      color: var(--ff-text-muted);
+    }
+
+    .contact-value {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--ff-black);
+    }
+
+    .contact-actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 24px;
+    }
+
+    .contact-action-btn {
+      flex: 1;
+      padding: 12px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      font-family: inherit;
+      min-height: 44px;
+    }
+
+    .contact-action-btn.call {
+      background: var(--ff-green);
+      color: var(--ff-black);
+    }
+
+    .contact-action-btn.text {
+      background: var(--ff-black);
+      color: #fff;
+    }
+
+    .contact-action-btn:active { opacity: 0.7; }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useState } = React;
+
+    /* ── Mock Data ── */
+
+    const AVATAR_COLORS = {
+      MJ: '#6C40E5',
+      SC: '#CF3E3E',
+      MR: '#C7A432',
+      AW: '#159B54',
+      JT: '#3B82F6',
+      PP: '#E86833',
+    };
+
+    const UNREAD_MESSAGES = [
+      {
+        id: 1, initials: 'MJ', name: 'Marcus Johnson', job: 'CNC Machine Operator',
+        company: 'Precision Manufacturing Inc.', preview: 'Sounds good, I can come in Thursday',
+        time: '2m', isUnread: true, score: 91, status: 'Screening',
+      },
+      {
+        id: 2, initials: 'SC', name: 'Sarah Chen', job: 'Forklift Operator',
+        company: 'Midwest Logistics Co.', preview: 'What are the hours for this position?',
+        time: '18m', isUnread: true, score: 78, status: 'Screening',
+      },
+      {
+        id: 3, initials: 'MR', name: 'Miguel Rodriguez', job: 'Welding Technician',
+        company: 'Summit Metal Works', preview: 'Yes I have 6 years TIG experience',
+        time: '1h', isUnread: true, score: 84, status: 'Interview',
+      },
+    ];
+
+    const NEW_APPLICANTS = [
+      {
+        id: 4, initials: 'AW', name: 'Ashley Williams', job: 'Quality Inspector',
+        company: 'Atlas Fabrication', time: '2h', score: 87, scoreColor: 'green', status: 'Screening',
+      },
+      {
+        id: 5, initials: 'JT', name: 'James Thompson', job: 'Industrial Maintenance Tech',
+        company: 'Great Lakes Stamping', time: '3h', score: 74, scoreColor: 'yellow', status: 'Screening',
+      },
+      {
+        id: 6, initials: 'PP', name: 'Priya Patel', job: 'Assembly Line Worker',
+        company: 'Heartland Industrial', time: '5h', score: 61, scoreColor: 'red', status: 'Screening',
+      },
+    ];
+
+    const CONVERSATIONS = {
+      1: [
+        { id: 1, content: "Hi Marcus! I'm reaching out about the CNC Machine Operator role at Precision Manufacturing. Do you have experience with CNC mills and lathes?", timestamp: 'Yesterday 4:12 PM', isBotMessage: true },
+        { id: 2, content: "Yes, 8 years on Haas mills and Mazak lathes. Currently at Great Lakes but looking for something closer to home.", timestamp: 'Yesterday 5:47 PM', isProMessage: true },
+        { id: 3, content: "That's great experience! This role is 1st shift, Mon–Fri, starting at $28/hr. Would you be open to an interview this week?", timestamp: 'Yesterday 5:50 PM', isBotMessage: true },
+        { id: 4, content: "Sounds good, I can come in Thursday morning or Friday afternoon.", timestamp: '2m ago', isProMessage: true },
+      ],
+      2: [
+        { id: 1, content: "Hi Sarah! I found your profile for the Forklift Operator position at Midwest Logistics. Are you currently certified on sit-down and stand-up forklifts?", timestamp: 'Yesterday 10:15 AM', isBotMessage: true },
+        { id: 2, content: "Yes I have both certifications, plus reach truck. Been driving for 4 years now.", timestamp: 'Yesterday 11:30 AM', isProMessage: true },
+        { id: 3, content: "That's perfect! The role offers $22/hr with overtime available. Shifts are 6AM–2:30PM. Would you like to learn more?", timestamp: 'Yesterday 11:33 AM', isBotMessage: true },
+        { id: 4, content: "What are the hours for this position?", timestamp: '18m ago', isProMessage: true },
+      ],
+      3: [
+        { id: 1, content: "Hi Miguel! We have a Welding Technician opening at Summit Metal Works. Do you have TIG welding experience?", timestamp: 'Monday 9:00 AM', isBotMessage: true },
+        { id: 2, content: "Yes I have 6 years TIG experience, plus MIG and stick. I can do stainless and aluminum too.", timestamp: 'Monday 12:20 PM', isProMessage: true },
+        { id: 3, content: "Excellent qualifications! The role pays $30–35/hr depending on experience. Can we schedule you for a weld test?", timestamp: 'Monday 12:25 PM', isBotMessage: true },
+        { id: 4, content: "Yes I have 6 years TIG experience", timestamp: '1h ago', isProMessage: true },
+      ],
+    };
+
+    const RESUME_DATA = {
+      1: {
+        experience: [
+          { title: 'CNC Machinist III', company: 'Great Lakes Stamping', dates: '2019 – Present', years: '5 yrs' },
+          { title: 'CNC Operator', company: 'Heartland Industrial', dates: '2016 – 2019', years: '3 yrs' },
+        ],
+        skills: ['Haas Mills', 'Mazak Lathes', 'GD&T', 'Mastercam', 'Blueprint Reading', 'Inspection'],
+        education: { degree: 'AAS Machining Technology', school: 'Kalamazoo Valley Community College', year: '2015' },
+      },
+    };
+
+    const CONTACT_DATA = {
+      1: { phone: '(616) 555-0182', email: 'm.johnson@email.com', location: 'Grand Rapids, MI' },
+      2: { phone: '(312) 555-0247', email: 's.chen@email.com', location: 'Chicago, IL' },
+      3: { phone: '(419) 555-0391', email: 'm.rodriguez@email.com', location: 'Toledo, OH' },
+    };
+
+    const STAGES = ['Screening', 'Interview', 'Offer', 'Hired', 'Rejected'];
+
+    /* ── Components ── */
+
+    function StatusBar() {
+      return (
+        <div className="status-bar">
+          <span>9:41</span>
+          <div className="status-bar-icons">
+            <svg width="14" height="10" viewBox="0 0 14 10" fill="none"><rect x="0" y="6" width="2.5" height="4" rx="0.5" fill="#fff"/><rect x="3.5" y="4" width="2.5" height="6" rx="0.5" fill="#fff"/><rect x="7" y="2" width="2.5" height="8" rx="0.5" fill="#fff"/><rect x="10.5" y="0" width="2.5" height="10" rx="0.5" fill="#fff"/></svg>
+            <svg width="14" height="10" viewBox="0 0 14 10" fill="none"><path d="M7 2.5C8.8 2.5 10.4 3.2 11.5 4.3L12.6 3.2C11.2 1.8 9.2 1 7 1S2.8 1.8 1.4 3.2L2.5 4.3C3.6 3.2 5.2 2.5 7 2.5Z" fill="#fff"/><path d="M7 5.5C8 5.5 9 5.9 9.7 6.6L10.8 5.5C9.8 4.5 8.4 4 7 4S4.2 4.5 3.2 5.5L4.3 6.6C5 5.9 6 5.5 7 5.5Z" fill="#fff"/><circle cx="7" cy="8.5" r="1.2" fill="#fff"/></svg>
+            <svg width="22" height="10" viewBox="0 0 22 10" fill="none"><rect x="0" y="1" width="18" height="8" rx="2" stroke="#fff" strokeWidth="1"/><rect x="1.5" y="2.5" width="13" height="5" rx="1" fill="#fff"/><rect x="19" y="3" width="2" height="4" rx="0.5" fill="#fff"/></svg>
+          </div>
+        </div>
+      );
+    }
+
+    function Avatar({ initials }) {
+      return (
+        <div className="avatar" style={{ background: AVATAR_COLORS[initials] || '#6C40E5' }}>
+          {initials}
+        </div>
+      );
+    }
+
+    /* ── Inbox Screen ── */
+
+    function InboxScreen({ onSelectCandidate }) {
+      const totalUnread = UNREAD_MESSAGES.length + NEW_APPLICANTS.length;
+      return (
+        <div className="phone-inner">
+          <StatusBar />
+          <div className="header-dark">
+            <div className="inbox-title-row">
+              {/* TODO: replace Inter 700 with Museo when font is available */}
+              <span className="inbox-title">Needs Attention</span>
+              <span className="unread-badge">{totalUnread} unread</span>
+            </div>
+            <div className="search-bar">
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="6" cy="6" r="5" stroke="#64748B" strokeWidth="1.5"/><line x1="10" y1="10" x2="13" y2="13" stroke="#64748B" strokeWidth="1.5" strokeLinecap="round"/></svg>
+              <span>Search candidates...</span>
+            </div>
+          </div>
+          <div className="list-area">
+            <div className="section-label">Unread messages</div>
+            {UNREAD_MESSAGES.map(c => (
+              <div key={c.id} className="candidate-row unread" onClick={() => onSelectCandidate(c)}>
+                <Avatar initials={c.initials} />
+                <div className="row-content">
+                  <div className="row-top">
+                    <span className="row-name">{c.name}</span>
+                    <span className="row-time">{c.time}</span>
+                  </div>
+                  <div className="row-job">{c.job} · {c.company}</div>
+                  <div className="row-preview-line">
+                    <span className="row-preview bold">{c.preview}</span>
+                    <div className="unread-dot" />
+                  </div>
+                </div>
+              </div>
+            ))}
+
+            <div className="section-label">New applicants</div>
+            {NEW_APPLICANTS.map(c => (
+              <div key={c.id} className="candidate-row" onClick={() => onSelectCandidate(c)}>
+                <Avatar initials={c.initials} />
+                <div className="row-content">
+                  <div className="row-top">
+                    <span className="row-name">{c.name}</span>
+                    <span className="row-time">{c.time}</span>
+                  </div>
+                  <div className="row-job">{c.job} · {c.company}</div>
+                  <div className="score-line">
+                    <span>Applied via FactoryFix · Score {c.score}</span>
+                    <div className={`score-dot ${c.scoreColor}`} />
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      );
+    }
+
+    /* ── Candidate Detail Screen ── */
+
+    function CandidateDetail({ candidate, onBack }) {
+      const [activeTab, setActiveTab] = useState('conversation');
+      const [stageOpen, setStageOpen] = useState(false);
+      const [currentStage, setCurrentStage] = useState(candidate.status);
+
+      const messages = CONVERSATIONS[candidate.id] || CONVERSATIONS[1];
+      const resume = RESUME_DATA[candidate.id] || RESUME_DATA[1];
+      const contact = CONTACT_DATA[candidate.id] || CONTACT_DATA[1];
+
+      const firstName = candidate.name.split(' ')[0];
+
+      return (
+        <div className="phone-inner">
+          <StatusBar />
+          <div className="detail-header">
+            <div className="detail-top-row">
+              <span className="back-btn" onClick={onBack}>‹ Inbox</span>
+              {/* TODO: replace Inter 700 with Museo when font is available */}
+              <span className="detail-name" style={{ flex: 1 }}>{candidate.name}</span>
+              <span className="stage-pill">{currentStage}</span>
+            </div>
+            <div className="detail-meta-row">
+              <span className="detail-job">{candidate.job} · {candidate.company}</span>
+              <span className="score-badge">Score {candidate.score || 91}</span>
+            </div>
+          </div>
+
+          <div className="tab-bar">
+            {['conversation', 'resume', 'contact'].map(tab => (
+              <button
+                key={tab}
+                className={`tab-btn ${activeTab === tab ? 'active' : ''}`}
+                onClick={() => setActiveTab(tab)}
+              >
+                {tab.charAt(0).toUpperCase() + tab.slice(1)}
+              </button>
+            ))}
+          </div>
+
+          {/* Tab content */}
+          {activeTab === 'conversation' && (
+            <div className="conversation-area">
+              {messages.map(msg => (
+                <div key={msg.id} className="msg-group">
+                  {msg.isBotMessage && (
+                    <div className="msg-label ai">
+                      <span className="ai-badge">AI RECRUITER</span>
+                    </div>
+                  )}
+                  {msg.isProMessage && (
+                    <div className="msg-label candidate">{candidate.name}</div>
+                  )}
+                  <div className={`bubble ${msg.isBotMessage ? 'ai' : msg.isProMessage ? 'candidate' : 'recruiter'}`}>
+                    {msg.content}
+                  </div>
+                  <div className={`msg-time ${msg.isEmployerMessage ? 'right' : ''}`}>{msg.timestamp}</div>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {activeTab === 'resume' && (
+            <div className="resume-area">
+              <div className="resume-section">
+                <div className="resume-section-title">Experience</div>
+                {resume.experience.map((exp, i) => (
+                  <div key={i} className="exp-item">
+                    <div className="exp-title">{exp.title}</div>
+                    <div className="exp-company">{exp.company}</div>
+                    <div className="exp-dates">{exp.dates} · {exp.years}</div>
+                  </div>
+                ))}
+              </div>
+              <div className="resume-section">
+                <div className="resume-section-title">Skills</div>
+                <div className="skills-grid">
+                  {resume.skills.map((s, i) => (
+                    <span key={i} className="skill-pill">{s}</span>
+                  ))}
+                </div>
+              </div>
+              <div className="resume-section">
+                <div className="resume-section-title">Education</div>
+                <div className="edu-title">{resume.education.degree}</div>
+                <div className="edu-school">{resume.education.school}</div>
+                <div className="edu-year">{resume.education.year}</div>
+              </div>
+            </div>
+          )}
+
+          {activeTab === 'contact' && (
+            <div className="contact-area">
+              <div className="contact-item">
+                <div className="contact-icon">
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M14.5 11.3v1.9a1.3 1.3 0 01-1.4 1.3 12.7 12.7 0 01-5.5-2 12.5 12.5 0 01-3.8-3.8A12.7 12.7 0 011.8 3.1 1.3 1.3 0 013 1.8h1.9a1.3 1.3 0 011.3 1.1c.1.7.3 1.4.5 2a1.3 1.3 0 01-.3 1.3l-.8.8a10.1 10.1 0 003.8 3.8l.8-.8a1.3 1.3 0 011.3-.3c.7.2 1.3.4 2 .5a1.3 1.3 0 011 1.1z" stroke="#64748B" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                </div>
+                <div>
+                  <div className="contact-label">Phone</div>
+                  <div className="contact-value">{contact.phone}</div>
+                </div>
+              </div>
+              <div className="contact-item">
+                <div className="contact-icon">
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="1.5" y="3" width="13" height="10" rx="1.5" stroke="#64748B" strokeWidth="1.3"/><path d="M1.5 4.5L8 9l6.5-4.5" stroke="#64748B" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                </div>
+                <div>
+                  <div className="contact-label">Email</div>
+                  <div className="contact-value">{contact.email}</div>
+                </div>
+              </div>
+              <div className="contact-item">
+                <div className="contact-icon">
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M13 6.7C13 10.5 8 14.5 8 14.5S3 10.5 3 6.7a5 5 0 1110 0z" stroke="#64748B" strokeWidth="1.3"/><circle cx="8" cy="6.7" r="1.5" stroke="#64748B" strokeWidth="1.3"/></svg>
+                </div>
+                <div>
+                  <div className="contact-label">Location</div>
+                  <div className="contact-value">{contact.location}</div>
+                </div>
+              </div>
+              <div className="contact-actions">
+                <button className="contact-action-btn call">Call</button>
+                <button className="contact-action-btn text">Text</button>
+              </div>
+            </div>
+          )}
+
+          {/* Reply bar — only on Conversation tab */}
+          {activeTab === 'conversation' && (
+            <div className="reply-bar">
+              <input className="reply-input" placeholder={`Reply to ${firstName}...`} />
+              <button className="send-btn">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="#fff" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
+              </button>
+            </div>
+          )}
+
+          {/* Stage picker — slides up above action sheet */}
+          {stageOpen && (
+            <div className="stage-picker">
+              <div className="stage-picker-header">
+                <span style={{ fontSize: 13, fontWeight: 600 }}>Move to stage</span>
+                <button className="stage-picker-close" onClick={() => setStageOpen(false)}>✕</button>
+              </div>
+              {STAGES.map(s => (
+                <button
+                  key={s}
+                  className={`stage-option ${s === currentStage ? 'active' : ''}`}
+                  onClick={() => { setCurrentStage(s); setStageOpen(false); }}
+                >
+                  {s}
+                </button>
+              ))}
+            </div>
+          )}
+
+          {/* Action sheet — all tabs */}
+          <div className="action-sheet">
+            <button className="action-chip primary">
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><rect x="1" y="1.5" width="10" height="9" rx="1" stroke="#fff" strokeWidth="1.2"/><path d="M3.5 1.5V0M8.5 1.5V0M1 4h10" stroke="#fff" strokeWidth="1.2" strokeLinecap="round"/></svg>
+              Schedule interview
+            </button>
+            <button
+              className="action-chip secondary"
+              onClick={() => setStageOpen(!stageOpen)}
+            >
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 4l4 4 4-4" stroke="#6C40E5" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
+              Move stage
+            </button>
+            <button className="action-chip outline">
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 1v10M1 7l5 5 5-5" stroke="#475569" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/></svg>
+              {activeTab === 'resume' ? 'Download' : 'Resume'}
+            </button>
+          </div>
+        </div>
+      );
+    }
+
+    /* ── App (Desktop: side-by-side, Mobile: single screen) ── */
+
+    function App() {
+      const [selectedCandidate, setSelectedCandidate] = useState(null);
+      const [demoCandidate] = useState(UNREAD_MESSAGES[0]);
+      const isMobile = window.innerWidth < 640;
+
+      if (isMobile) {
+        return (
+          <div className="desktop-layout">
+            <div className="phone-frame">
+              {selectedCandidate ? (
+                <CandidateDetail
+                  candidate={selectedCandidate}
+                  onBack={() => setSelectedCandidate(null)}
+                />
+              ) : (
+                <InboxScreen onSelectCandidate={setSelectedCandidate} />
+              )}
+            </div>
+          </div>
+        );
+      }
+
+      return (
+        <div className="desktop-layout">
+          <div>
+            <div className="phone-frame-label">Inbox — Needs Attention</div>
+            <div className="phone-frame">
+              <InboxScreen onSelectCandidate={setSelectedCandidate} />
+            </div>
+          </div>
+          <div>
+            <div className="phone-frame-label">Candidate Detail — {selectedCandidate ? selectedCandidate.name : demoCandidate.name}</div>
+            <div className="phone-frame">
+              <CandidateDetail
+                candidate={selectedCandidate || demoCandidate}
+                onBack={() => setSelectedCandidate(null)}
+              />
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+  </script>
+</body>
+</html>
