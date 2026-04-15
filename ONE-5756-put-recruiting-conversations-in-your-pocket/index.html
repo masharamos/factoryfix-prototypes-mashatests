@@ -174,7 +174,7 @@
     /* Shared header */
     .header-dark {
       background: #1E293B; /* shade-860 */
-      padding: 12px 16px;
+      padding: 12px 16px 16px;
       flex-shrink: 0;
     }
 
@@ -183,7 +183,7 @@
       display: flex;
       align-items: center;
       gap: 8px;
-      padding: 8px 0 12px;
+      padding: 8px 0 16px;
     }
 
     .inbox-title {
@@ -206,7 +206,7 @@
       background: #334155; /* shade-840 */
       border: 1px solid #475569; /* shade-820 */
       border-radius: 6px;
-      padding: 8px 12px;
+      padding: 12px 12px;
       display: flex;
       align-items: center;
       gap: 8px;
@@ -326,7 +326,7 @@
 
     .detail-header {
       background: #1E293B; /* shade-860, same as inbox header */
-      padding: 12px 16px 0;
+      padding: 12px 16px 8px;
       flex-shrink: 0;
     }
 
@@ -351,6 +351,27 @@
 
     .back-btn:active { opacity: 0.7; }
 
+    .detail-back-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: #fff;
+      padding: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-left: -4px;
+    }
+
+    .detail-back-btn:active { opacity: 0.6; }
+
+    .detail-name-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 0;
+    }
+
     /* TODO: replace Inter 700 with Museo when font is available */
     .detail-name {
       font-size: 17px;
@@ -365,22 +386,26 @@
       background: #fff;
       border: 1px solid #E2E8F0;
       border-radius: 6px;
-      padding: 4px 10px;
+      padding: 4px 12px 4px 8px;
       font-size: 12px;
-      font-weight: 500;
-      color: var(--ff-black);
+      font-weight: 400;
+      line-height: 24px;
+      color: #000;
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 12px;
       cursor: pointer;
       font-family: inherit;
       white-space: nowrap;
+      min-height: 36px;
     }
 
     .stage-dropdown-btn:active { opacity: 0.7; }
 
-    .stage-chevron {
-      color: var(--ff-text-muted);
+    .stage-dropdown-label {
+      font-family: inherit;
+      font-size: 12px;
+      line-height: 24px;
     }
 
     .detail-download-btn {
@@ -405,7 +430,6 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding-bottom: 12px;
     }
 
     .detail-job {
@@ -414,17 +438,18 @@
     }
 
     .score-badge {
-      background: #BEF4D5; /* primary-100 */
-      color: var(--ff-black);
-      font-size: 13px;
-      font-weight: 700;
-      padding: 4px 10px;
-      border-radius: 6px;
+      background: #53D58B; /* primary-300 */
+      color: #0F172A; /* shade-880 */
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 1.5;
+      padding: 2px 4px 2px 2px;
+      border-radius: 2px;
       flex-shrink: 0;
       display: flex;
       align-items: center;
-      gap: 4px;
-      border: 1px solid #E2E8F0;
+      gap: 2px;
+      border: none;
     }
 
     .score-badge-star {
@@ -433,42 +458,50 @@
     }
 
     .score-badge-num {
-      text-decoration: underline;
-      text-decoration-color: #3B82F6;
-      text-underline-offset: 3px;
-      text-decoration-thickness: 2px;
+      text-decoration: none;
     }
 
     /* Tabs */
+    .tab-bar-wrap {
+      background: transparent;
+      padding: 8px 0 0;
+      flex-shrink: 0;
+    }
+
     .tab-bar {
       display: flex;
-      gap: 4px;
-      padding: 0 16px 12px;
-      background: #1E293B; /* shade-860 */
+      align-items: center;
+      background: #334155;
+      border-radius: 6px;
+      padding: 2px;
+      gap: 0;
     }
 
     .tab-btn {
-      font-size: 11px;
-      font-weight: 600;
-      padding: 6px 14px;
-      border-radius: 20px;
+      flex: 1;
+      min-width: 0;
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: 400;
+      line-height: 16px;
+      padding: 10px;
       border: none;
+      border-radius: 6px;
       cursor: pointer;
-      transition: all 0.15s;
+      background: transparent;
+      color: #fff;
+      text-align: center;
       white-space: nowrap;
+      transition: background 0.15s, color 0.15s;
     }
 
     .tab-btn.active {
       background: #fff;
-      color: var(--ff-black);
+      color: #000;
+      font-weight: 500;
     }
 
-    .tab-btn:not(.active) {
-      background: transparent;
-      color: #94A3B8;
-    }
-
-    .tab-btn:not(.active):active { color: #fff; }
+    .tab-btn:not(.active):active { opacity: 0.7; }
 
     /* Conversation */
     .conversation-area {
@@ -518,14 +551,24 @@
 
     .ai-badge {
       font-size: 12px;
+      line-height: 16px;
       font-weight: 700;
       background: rgba(179, 54, 255, 0.1);
       color: #5F30D1;
       padding: 0 4px;
       border-radius: 16px;
-      display: flex;
+      display: inline-flex;
       align-items: center;
+      justify-content: center;
       gap: 4px;
+      flex-shrink: 0;
+    }
+
+    .ai-badge img {
+      width: 16px;
+      height: 20px;
+      display: block;
+      flex-shrink: 0;
     }
 
     .msg-time {
@@ -544,38 +587,67 @@
     .reply-bar {
       display: flex;
       align-items: center;
-      gap: 8px;
-      padding: 8px 16px;
+      gap: 10px;
+      padding: 16px;
       background: #fff;
       border-top: 0.5px solid var(--ff-border);
       flex-shrink: 0;
     }
 
+    .reply-plus-btn {
+      width: 20px;
+      height: 20px;
+      background: none;
+      border: none;
+      padding: 0;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      color: #000;
+    }
+
+    .reply-input-wrap {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      align-items: center;
+      background: #fff;
+      border: 1px solid #CBD5E1;
+      border-radius: 6px;
+      height: 36px;
+      padding: 0 8px;
+      gap: 8px;
+    }
+
     .reply-input {
       flex: 1;
-      background: var(--ff-gray-bg);
+      min-width: 0;
+      background: transparent;
       border: none;
-      border-radius: 20px;
-      padding: 10px 16px;
-      font-size: 13px;
+      padding: 4px 8px;
+      font-size: 12px;
+      line-height: 16px;
       font-family: inherit;
       color: var(--ff-black);
       outline: none;
     }
 
-    .reply-input::placeholder { color: var(--ff-text-muted); }
+    .reply-input::placeholder { color: #8191AA; }
 
     .send-btn {
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      background: var(--ff-black);
+      width: 20px;
+      height: 20px;
+      background: none;
       border: none;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
+      color: #94A3B8;
+      padding: 0;
     }
 
     .send-btn:active { opacity: 0.7; }
@@ -587,8 +659,22 @@
       padding: 12px 16px;
       background: #fff;
       border-top: 0.5px solid var(--ff-border);
-      overflow-x: auto;
       flex-shrink: 0;
+    }
+
+    .action-sheet > .action-chip,
+    .action-sheet > .stage-dropdown-wrapper {
+      flex: 1 1 0;
+      min-width: 0;
+    }
+
+    .action-sheet .stage-dropdown-btn {
+      width: 100%;
+      justify-content: space-between;
+    }
+
+    .action-sheet > .action-chip.primary {
+      justify-content: center;
     }
 
     .action-sheet::-webkit-scrollbar { display: none; }
@@ -609,8 +695,16 @@
     }
 
     .action-chip.primary {
-      background: var(--ff-black);
+      background: #000;
       color: #fff;
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 18px;
+      letter-spacing: 0.02em;
+      padding: 8px 12px;
+      border-radius: 6px;
+      gap: 6px;
+      min-height: 36px;
     }
 
     .action-chip.secondary {
@@ -633,78 +727,335 @@
 
     .stage-dropdown-list {
       position: absolute;
-      top: 100%;
-      right: 0;
-      margin-top: 4px;
+      bottom: 100%;
+      left: 0;
+      margin-bottom: 4px;
       background: #fff;
-      border: 1px solid #E2E8F0;
       border-radius: 6px;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+      box-shadow:
+        0 16px 64px -24px rgba(0,0,0,0.2),
+        0 8px 40px -16px rgba(0,0,0,0.1),
+        0 1px 2px -1px rgba(0,0,0,0.2);
       overflow: hidden;
-      z-index: 10;
-      min-width: 140px;
+      z-index: 100;
+      min-width: 180px;
+      padding: 8px 0;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
     }
 
     .stage-option {
-      padding: 10px 16px;
-      font-size: 13px;
+      padding: 4px 12px;
+      height: 32px;
+      font-size: 12px;
+      line-height: 18px;
       cursor: pointer;
       border: none;
-      background: none;
+      background: #fff;
       width: 100%;
       text-align: left;
       font-family: inherit;
-      color: var(--ff-black);
+      color: #000;
+      font-weight: 400;
+      display: flex;
+      align-items: center;
     }
 
     .stage-option:active,
-    .stage-option:hover { background: var(--ff-washed-green); }
+    .stage-option:hover { background: #F4F4FE; }
 
     .stage-option.active {
-      color: var(--ff-purple);
-      font-weight: 600;
+      background: #ECEAFD;
+      color: #000;
+      font-weight: 700;
     }
 
     /* Resume tab */
     .resume-area {
       flex: 1;
       overflow-y: auto;
+      padding: 12px;
+      background: #F1F5F9;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    /* Copilot Output block */
+    .copilot-output {
+      background: #F1FCF5;
+      border: 1px solid #DEFAEA;
+      border-radius: 12px 12px 4px 12px;
       padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .copilot-output-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .copilot-output-left {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      flex-wrap: wrap;
+    }
+
+    .rating-chip {
+      background: #53D58B;
+      border-radius: 4px;
+      padding: 2px 4px 2px 2px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      height: 24px;
+      font-size: 12px;
+      color: #000;
+    }
+
+    .rating-chip-score {
       background: #fff;
+      border-radius: 2px;
+      padding: 0 4px 0 2px;
+      height: 20px;
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      font-weight: 800;
+      color: #0F172A;
+      font-size: 14px;
+    }
+
+    .rating-chip-for {
+      font-weight: 400;
+    }
+
+    .rating-chip-job {
+      font-weight: 700;
+    }
+
+    .copilot-output-visibility {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 12px;
+      font-style: italic;
+      color: #64748B;
+      line-height: 18px;
+      white-space: nowrap;
+    }
+
+    .copilot-output-bullets {
+      margin: 0;
+      padding-left: 20px;
+      color: #0F172A;
+      font-size: 14px;
+      line-height: 21px;
+    }
+
+    .copilot-output-bullets li {
+      margin-bottom: 0;
+    }
+
+    .copilot-output-bottom {
+      display: flex;
+      gap: 8px;
+      align-items: flex-end;
+      justify-content: space-between;
+      flex-wrap: wrap;
+    }
+
+    .output-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      flex: 1;
+      min-width: 0;
+    }
+
+    .output-chip {
+      background: #BEF4D5;
+      color: #1B7A45;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 6px 8px;
+      border-radius: 40px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      line-height: 1;
+    }
+
+    .output-feedback {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+
+    .output-feedback-label {
+      font-size: 10px;
+      font-style: italic;
+      color: #64748B;
+    }
+
+    .output-feedback-btn {
+      background: none;
+      border: none;
+      padding: 2px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .output-feedback-btn:active { opacity: 0.5; }
+
+    .resume-doc {
+      background: #fff;
+      border-radius: 8px;
+      border: 1px solid #E2E8F0;
+      padding: 20px 18px;
+    }
+
+    .resume-download-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #0F172A;
+      color: #fff;
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 6px 12px 6px 10px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      white-space: nowrap;
+      flex-shrink: 0;
+      box-shadow: 0 4px 12px rgba(15, 23, 42, 0.25), 0 2px 4px rgba(15, 23, 42, 0.15);
+    }
+
+    .resume-download-btn:active { opacity: 0.85; }
+
+    .resume-head {
+      padding-bottom: 14px;
+      border-bottom: 1px solid #E2E8F0;
+      margin-bottom: 16px;
+    }
+
+    .resume-name-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .resume-name {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--ff-black);
+      line-height: 1.2;
+    }
+
+    .resume-headline {
+      font-size: 13px;
+      color: #475569;
+      font-weight: 600;
+      margin-top: 2px;
+    }
+
+    .resume-contact-line {
+      font-size: 11px;
+      color: var(--ff-text-secondary);
+      margin-top: 8px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      align-items: center;
+      line-height: 1.4;
+    }
+
+    .resume-dot {
+      color: var(--ff-text-muted);
     }
 
     .resume-section {
-      margin-bottom: 24px;
+      margin-bottom: 18px;
+    }
+
+    .resume-section:last-child {
+      margin-bottom: 0;
     }
 
     .resume-section-title {
-      font-size: 11px;
+      font-size: 10px;
       font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 0.08em;
+      letter-spacing: 0.1em;
       color: var(--ff-text-muted);
-      margin-bottom: 12px;
+      margin-bottom: 8px;
+      padding-bottom: 4px;
+      border-bottom: 1px solid #F1F5F9;
+    }
+
+    .resume-summary {
+      font-size: 12px;
+      line-height: 18px;
+      color: #334155;
     }
 
     .exp-item {
-      margin-bottom: 12px;
+      margin-bottom: 14px;
+    }
+
+    .exp-item:last-child {
+      margin-bottom: 0;
+    }
+
+    .exp-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 8px;
     }
 
     .exp-title {
-      font-size: 14px;
-      font-weight: 600;
+      font-size: 13px;
+      font-weight: 700;
       color: var(--ff-black);
     }
 
     .exp-company {
       font-size: 12px;
-      color: var(--ff-text-secondary);
+      color: #334155;
+      margin-top: 1px;
     }
 
     .exp-dates {
-      font-size: 11px;
+      font-size: 10px;
       color: var(--ff-text-muted);
-      margin-top: 2px;
+      white-space: nowrap;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .exp-bullets {
+      margin: 6px 0 0 16px;
+      padding: 0;
+      font-size: 12px;
+      line-height: 18px;
+      color: #334155;
+    }
+
+    .exp-bullets li {
+      margin-bottom: 2px;
     }
 
     .skills-grid {
@@ -714,27 +1065,48 @@
     }
 
     .skill-pill {
-      background: var(--ff-gray-bg);
-      color: var(--ff-text-secondary);
-      font-size: 12px;
-      font-weight: 500;
-      padding: 5px 12px;
+      background: #F1F5F9;
+      color: #334155;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 3px 10px;
       border-radius: 20px;
     }
 
+    .cert-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 8px;
+      padding: 4px 0;
+    }
+
+    .cert-name {
+      font-size: 12px;
+      color: var(--ff-black);
+      font-weight: 500;
+    }
+
+    .cert-year {
+      font-size: 10px;
+      color: var(--ff-text-muted);
+      font-variant-numeric: tabular-nums;
+    }
+
     .edu-title {
-      font-size: 14px;
+      font-size: 13px;
       font-weight: 600;
       color: var(--ff-black);
     }
 
     .edu-school {
       font-size: 12px;
-      color: var(--ff-text-secondary);
+      color: #334155;
+      margin-top: 1px;
     }
 
     .edu-year {
-      font-size: 11px;
+      font-size: 10px;
       color: var(--ff-text-muted);
       margin-top: 2px;
     }
@@ -752,7 +1124,6 @@
       align-items: center;
       gap: 12px;
       padding: 14px 0;
-      border-bottom: 0.5px solid var(--ff-border);
     }
 
     .contact-icon {
@@ -899,11 +1270,40 @@
 
     const RESUME_DATA = {
       1: {
+        headline: 'CNC Machinist III · 8 years experience',
+        location: 'Grand Rapids, MI',
+        phone: '(616) 555-0182',
+        email: 'm.johnson@email.com',
+        summary: 'Precision CNC machinist with 8+ years on Haas and Mazak 3/4-axis machines. Skilled at reading complex blueprints, holding tight tolerances (±0.0005"), and mentoring junior operators. Zero safety incidents on record.',
         experience: [
-          { title: 'CNC Machinist III', company: 'Great Lakes Stamping', dates: '2019 – Present', years: '5 yrs' },
-          { title: 'CNC Operator', company: 'Heartland Industrial', dates: '2016 – 2019', years: '3 yrs' },
+          {
+            title: 'CNC Machinist III',
+            company: 'Great Lakes Stamping',
+            location: 'Grand Rapids, MI',
+            dates: 'Mar 2019 – Present',
+            bullets: [
+              'Operate Haas VF-4 and Mazak Integrex lathes on aerospace-grade parts',
+              'Program and set up jobs using Mastercam X9; held ±0.0005" on tight tolerance work',
+              'Trained 4 junior operators on GD&T reading and first-article inspection',
+            ],
+          },
+          {
+            title: 'CNC Operator',
+            company: 'Heartland Industrial',
+            location: 'Kalamazoo, MI',
+            dates: 'Jun 2016 – Feb 2019',
+            bullets: [
+              'Ran 3-axis mills and lathes on automotive brackets, 50+ parts/shift',
+              'Performed in-process inspection with calipers, mics, and height gauges',
+              'Recognized for 99.2% first-pass yield over 18-month period',
+            ],
+          },
         ],
-        skills: ['Haas Mills', 'Mazak Lathes', 'GD&T', 'Mastercam', 'Blueprint Reading', 'Inspection'],
+        skills: ['Haas Mills', 'Mazak Lathes', 'Mastercam X9', 'GD&T', 'Blueprint Reading', 'First-Article Inspection', 'CMM Operation', 'Preventive Maintenance'],
+        certifications: [
+          { name: 'NIMS Level II — CNC Milling', year: '2020' },
+          { name: 'OSHA 10 — General Industry', year: '2018' },
+        ],
         education: { degree: 'AAS Machining Technology', school: 'Kalamazoo Valley Community College', year: '2015' },
       },
     };
@@ -914,7 +1314,7 @@
       3: { phone: '(419) 555-0391', email: 'm.rodriguez@email.com', location: 'Toledo, OH' },
     };
 
-    const STAGES = ['Screening', 'Interview', 'Offer', 'Hired', 'Rejected'];
+    const STAGES = ['New application', 'Engaged', 'Review', 'Interview', 'Offer', 'Hired', 'Rejected', 'Rejected w/ reason'];
 
     /* ── Components ── */
 
@@ -996,7 +1396,7 @@
     function CandidateDetail({ candidate, onBack }) {
       const [activeTab, setActiveTab] = useState('conversation');
       const [stageOpen, setStageOpen] = useState(false);
-      const [currentStage, setCurrentStage] = useState(candidate.status);
+      const [currentStage, setCurrentStage] = useState('Engaged');
 
       const messages = CONVERSATIONS[candidate.id] || CONVERSATIONS[1];
       const resume = RESUME_DATA[candidate.id] || RESUME_DATA[1];
@@ -1011,9 +1411,8 @@
             <div className="navbar-logo">
               <img src="/assets/ff-logo-hex.svg" alt="FactoryFix" width="28" height="24" />
             </div>
-            <button className="navbar-back-btn" onClick={onBack}>
-              <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M7.5 2.5L4 6l3.5 3.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
-              Back
+            <button className="navbar-back-btn">
+              Show full version
             </button>
             <button className="navbar-hamburger">
               <svg width="20" height="14" viewBox="0 0 20 14" fill="none">
@@ -1025,53 +1424,35 @@
           </div>
           <div className="detail-header">
             <div className="detail-top-row">
-              <span className="detail-name" style={{ flex: 1 }}>{candidate.name}</span>
-              <div className="detail-actions-right">
-                <div className="stage-dropdown-wrapper">
-                  <button className="stage-dropdown-btn" onClick={() => setStageOpen(!stageOpen)}>
-                    {currentStage}
-                    <svg className="stage-chevron" width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M3 4.5L6 7.5L9 4.5" stroke="#64748B" strokeWidth="1.5" strokeLinejoin="round"/></svg>
-                  </button>
-                  {stageOpen && (
-                    <div className="stage-dropdown-list">
-                      {STAGES.map(s => (
-                        <button
-                          key={s}
-                          className={`stage-option ${s === currentStage ? 'active' : ''}`}
-                          onClick={() => { setCurrentStage(s); setStageOpen(false); }}
-                        >
-                          {s}
-                        </button>
-                      ))}
-                    </div>
-                  )}
-                </div>
-                <button className="detail-download-btn">
-                  <img src="/assets/icon-download.svg" alt="Download" width="22" height="22" />
-                </button>
+              <button className="detail-back-btn" onClick={onBack} aria-label="Back">
+                <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M7.5 2.5L4 6l3.5 3.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
+              </button>
+              <div className="detail-name-wrap" style={{ flex: 1 }}>
+                <span className="detail-name">{candidate.name}</span>
+                <span className="score-badge">
+                  <span className="score-badge-star">
+                    <svg width="12" height="12" viewBox="0 0 14 14" fill="none"><path d="M7 1l1.76 3.57 3.94.57-2.85 2.78.67 3.93L7 10.07l-3.52 1.78.67-3.93L1.3 5.14l3.94-.57L7 1z" fill="#184F32"/></svg>
+                  </span>
+                  <span className="score-badge-num">{candidate.score ? (candidate.score / 20).toFixed(1) : '4.5'}</span>
+                </span>
               </div>
             </div>
             <div className="detail-meta-row">
               <span className="detail-job">{candidate.job} · {candidate.company}</span>
-              <span className="score-badge">
-                <span className="score-badge-star">
-                  <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1l1.76 3.57 3.94.57-2.85 2.78.67 3.93L7 10.07l-3.52 1.78.67-3.93L1.3 5.14l3.94-.57L7 1z" fill="#184F32"/></svg>
-                </span>
-                <span className="score-badge-num">{candidate.score ? (candidate.score / 20).toFixed(1) : '4.5'}</span>
-              </span>
             </div>
-          </div>
-
-          <div className="tab-bar">
-            {['conversation', 'resume', 'contact'].map(tab => (
-              <button
-                key={tab}
-                className={`tab-btn ${activeTab === tab ? 'active' : ''}`}
-                onClick={() => setActiveTab(tab)}
-              >
-                {tab.charAt(0).toUpperCase() + tab.slice(1)}
-              </button>
-            ))}
+            <div className="tab-bar-wrap">
+              <div className="tab-bar">
+                {['conversation', 'resume', 'contact'].map(tab => (
+                  <button
+                    key={tab}
+                    className={`tab-btn ${activeTab === tab ? 'active' : ''}`}
+                    onClick={() => setActiveTab(tab)}
+                  >
+                    {tab.charAt(0).toUpperCase() + tab.slice(1)}
+                  </button>
+                ))}
+              </div>
+            </div>
           </div>
 
           {/* Tab content */}
@@ -1082,10 +1463,7 @@
                   <div className="msg-card-header">
                     {msg.isBotMessage ? (
                       <span className="ai-badge">
-                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                          <path d="M9.8 12.8L10.7 13.2L9.8 13.6L9.4 14.5L9 13.6L8.1 13.2L9 12.8L9.4 11.5L9.8 12.8ZM8.2 6.5C8.27 6.49 8.34 6.5 8.4 6.54C8.46 6.57 8.51 6.62 8.54 6.69C8.56 6.75 8.57 6.82 8.55 6.88L7.4 10.1H9.5C9.56 10.1 9.61 10.12 9.66 10.15C9.71 10.18 9.74 10.22 9.77 10.27C9.79 10.32 9.8 10.38 9.79 10.43C9.78 10.49 9.76 10.54 9.72 10.58L4.8 15.3C4.75 15.35 4.69 15.38 4.62 15.39C4.55 15.4 4.48 15.39 4.42 15.36C4.36 15.33 4.31 15.28 4.29 15.22C4.26 15.16 4.26 15.09 4.28 15.03L5.43 11.8H3.3C3.24 11.8 3.19 11.78 3.14 11.75C3.09 11.72 3.05 11.68 3.02 11.63C3 11.58 2.99 11.52 3 11.47C3.01 11.41 3.04 11.36 3.08 11.32L7.99 6.54C8.04 6.49 8.11 6.47 8.18 6.5H8.2ZM5.4 7.1L6.6 7.5L5.4 7.9L5 9L4.6 7.9L3.4 7.5L4.6 7.1L5 6L5.4 7.1Z" fill="url(#copilotGrad)"/>
-                          <defs><radialGradient id="copilotGrad" cx="0" cy="0" r="1" gradientTransform="translate(6.5 10) scale(8)"><stop stopColor="#B336FF"/><stop offset="1" stopColor="#6C40E5"/></radialGradient></defs>
-                        </svg>
+                        <img src="/assets/icon-copilot-spark.svg" alt="" />
                         Copilot
                       </span>
                     ) : (
@@ -1101,29 +1479,134 @@
 
           {activeTab === 'resume' && (
             <div className="resume-area">
-              <div className="resume-section">
-                <div className="resume-section-title">Experience</div>
-                {resume.experience.map((exp, i) => (
-                  <div key={i} className="exp-item">
-                    <div className="exp-title">{exp.title}</div>
-                    <div className="exp-company">{exp.company}</div>
-                    <div className="exp-dates">{exp.dates} · {exp.years}</div>
+              <div className="copilot-output">
+                <div className="copilot-output-top">
+                  <div className="copilot-output-left">
+                    <span className="ai-badge">
+                      <img src="/assets/icon-copilot-spark.svg" alt="" />
+                      Copilot
+                    </span>
+                    <span className="rating-chip">
+                      <span className="rating-chip-score">
+                        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1l1.76 3.57 3.94.57-2.85 2.78.67 3.93L7 10.07l-3.52 1.78.67-3.93L1.3 5.14l3.94-.57L7 1z" fill="#184F32"/></svg>
+                        <span>5</span>
+                      </span>
+                      <span className="rating-chip-for">for</span>
+                      <span className="rating-chip-job">{candidate.job}</span>
+                    </span>
                   </div>
-                ))}
-              </div>
-              <div className="resume-section">
-                <div className="resume-section-title">Skills</div>
-                <div className="skills-grid">
-                  {resume.skills.map((s, i) => (
-                    <span key={i} className="skill-pill">{s}</span>
-                  ))}
+                  <span className="copilot-output-visibility">
+                    <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                      <path d="M1 7s2-4 6-4 6 4 6 4-2 4-6 4-6-4-6-4z" stroke="#64748B" strokeWidth="1.2"/>
+                      <circle cx="7" cy="7" r="1.8" stroke="#64748B" strokeWidth="1.2"/>
+                    </svg>
+                    Visible only to you
+                  </span>
+                </div>
+                <ul className="copilot-output-bullets">
+                  <li>{firstName} has 8+ years of direct, hands-on experience operating Haas and Mazak CNC machines — closely aligned with the {candidate.job} role.</li>
+                  <li>Current role at Great Lakes Stamping involves aerospace-grade precision work held to ±0.0005" tolerances, demonstrating recent relevant experience.</li>
+                  <li>Holds NIMS Level II certification, reads GD&T fluently, and is located in {contact.location} — within reasonable commute of the job site.</li>
+                </ul>
+                <div className="copilot-output-bottom">
+                  <div className="output-chips">
+                    <span className="output-chip">
+                      <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="#1B7A45" strokeWidth="1.3"/><path d="M4.5 7.2l1.8 1.8 3.2-3.8" stroke="#1B7A45" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                      Longevity
+                    </span>
+                    <span className="output-chip">
+                      <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="#1B7A45" strokeWidth="1.3"/><path d="M4.5 7.2l1.8 1.8 3.2-3.8" stroke="#1B7A45" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                      Ability to commute
+                    </span>
+                    <span className="output-chip">
+                      <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="#1B7A45" strokeWidth="1.3"/><path d="M4.5 7.2l1.8 1.8 3.2-3.8" stroke="#1B7A45" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                      Pay expectations
+                    </span>
+                    <span className="output-chip">
+                      <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="#1B7A45" strokeWidth="1.3"/><path d="M4.5 7.2l1.8 1.8 3.2-3.8" stroke="#1B7A45" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                      Shift expectations
+                    </span>
+                  </div>
+                  <div className="output-feedback">
+                    <span className="output-feedback-label">How did I do?</span>
+                    <button className="output-feedback-btn" aria-label="Thumbs up">
+                      <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M4 6h1.5V12H4a1 1 0 01-1-1V7a1 1 0 011-1zM5.5 6l2-4.5a1 1 0 011.8.8L8.5 5h2.7a1 1 0 011 1.2l-1 4.5a1.5 1.5 0 01-1.5 1.3H5.5V6z" stroke="#64748B" strokeWidth="1.2" strokeLinejoin="round"/></svg>
+                    </button>
+                    <button className="output-feedback-btn" aria-label="Thumbs down">
+                      <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M10 8H8.5V2H10a1 1 0 011 1v4a1 1 0 01-1 1zM8.5 8l-2 4.5a1 1 0 01-1.8-.8L5.5 9H2.8a1 1 0 01-1-1.2l1-4.5A1.5 1.5 0 013.3 2H8.5v6z" stroke="#64748B" strokeWidth="1.2" strokeLinejoin="round"/></svg>
+                    </button>
+                  </div>
                 </div>
               </div>
-              <div className="resume-section">
-                <div className="resume-section-title">Education</div>
-                <div className="edu-title">{resume.education.degree}</div>
-                <div className="edu-school">{resume.education.school}</div>
-                <div className="edu-year">{resume.education.year}</div>
+              <div className="resume-doc">
+                <div className="resume-head">
+                  <div className="resume-name-row">
+                    <div className="resume-name">{candidate.name}</div>
+                    <button className="resume-download-btn">
+                      <img src="/assets/icon-download.svg" alt="" width="14" height="14" />
+                      Download resume
+                    </button>
+                  </div>
+                  <div className="resume-headline">{resume.headline}</div>
+                  <div className="resume-contact-line">
+                    <span>{resume.location}</span>
+                    <span className="resume-dot">·</span>
+                    <span>{resume.phone}</span>
+                    <span className="resume-dot">·</span>
+                    <span>{resume.email}</span>
+                  </div>
+                </div>
+
+                <div className="resume-section">
+                  <div className="resume-section-title">Summary</div>
+                  <p className="resume-summary">{resume.summary}</p>
+                </div>
+
+                <div className="resume-section">
+                  <div className="resume-section-title">Experience</div>
+                  {resume.experience.map((exp, i) => (
+                    <div key={i} className="exp-item">
+                      <div className="exp-top">
+                        <div className="exp-title">{exp.title}</div>
+                        <div className="exp-dates">{exp.dates}</div>
+                      </div>
+                      <div className="exp-company">{exp.company} · {exp.location}</div>
+                      <ul className="exp-bullets">
+                        {exp.bullets.map((b, j) => (
+                          <li key={j}>{b}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="resume-section">
+                  <div className="resume-section-title">Skills</div>
+                  <div className="skills-grid">
+                    {resume.skills.map((s, i) => (
+                      <span key={i} className="skill-pill">{s}</span>
+                    ))}
+                  </div>
+                </div>
+
+                {resume.certifications && (
+                  <div className="resume-section">
+                    <div className="resume-section-title">Certifications</div>
+                    {resume.certifications.map((c, i) => (
+                      <div key={i} className="cert-item">
+                        <span className="cert-name">{c.name}</span>
+                        <span className="cert-year">{c.year}</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                <div className="resume-section">
+                  <div className="resume-section-title">Education</div>
+                  <div className="edu-title">{resume.education.degree}</div>
+                  <div className="edu-school">{resume.education.school}</div>
+                  <div className="edu-year">{resume.education.year}</div>
+                </div>
               </div>
             </div>
           )}
@@ -1157,40 +1640,60 @@
                   <div className="contact-value">{contact.location}</div>
                 </div>
               </div>
-              <div className="contact-actions">
-                <button className="contact-action-btn call">Call</button>
-                <button className="contact-action-btn text">Text</button>
-              </div>
             </div>
           )}
 
           {/* Reply bar — only on Conversation tab */}
           {activeTab === 'conversation' && (
             <div className="reply-bar">
-              <input className="reply-input" placeholder={`Reply to ${firstName}...`} />
-              <button className="send-btn">
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="#fff" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
+              <button className="reply-plus-btn" aria-label="Add attachment">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                  <circle cx="10" cy="10" r="8.33" stroke="currentColor" strokeWidth="1.67"/>
+                  <path d="M10 6.67v6.67M6.67 10h6.67" stroke="currentColor" strokeWidth="1.67" strokeLinecap="round"/>
+                </svg>
               </button>
+              <div className="reply-input-wrap">
+                <input className="reply-input" placeholder={`Message ${firstName}`} />
+                <button className="send-btn" aria-label="Send">
+                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                    <path d="M17.5 2.5L9.17 10.83M17.5 2.5l-5.83 15-3.34-7.5-7.5-3.33L17.5 2.5z" stroke="currentColor" strokeWidth="1.67" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                </button>
+              </div>
             </div>
           )}
 
           {/* Action sheet — all tabs */}
           <div className="action-sheet">
             <button className="action-chip primary">
-              <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><rect x="1" y="1.5" width="10" height="9" rx="1" stroke="#fff" strokeWidth="1.2"/><path d="M3.5 1.5V0M8.5 1.5V0M1 4h10" stroke="#fff" strokeWidth="1.2" strokeLinecap="round"/></svg>
+              <svg width="16" height="16" viewBox="0 0 20 20" fill="none">
+                <rect x="2.5" y="3.75" width="15" height="13.75" rx="1.5" stroke="#fff" strokeWidth="1.67"/>
+                <path d="M6.67 2.5v2.5M13.33 2.5v2.5M2.5 8.33h15" stroke="#fff" strokeWidth="1.67" strokeLinecap="round"/>
+              </svg>
               Schedule interview
             </button>
-            <button
-              className="action-chip secondary"
-              onClick={() => setStageOpen(!stageOpen)}
-            >
-              <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 4l4 4 4-4" stroke="#6C40E5" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
-              Move stage
-            </button>
-            <button className="action-chip outline">
-              <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 1v10M1 7l5 5 5-5" stroke="#475569" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/></svg>
-              {activeTab === 'resume' ? 'Download' : 'Resume'}
-            </button>
+            <div className="stage-dropdown-wrapper">
+              <button
+                className="stage-dropdown-btn"
+                onClick={() => setStageOpen(!stageOpen)}
+              >
+                <span className="stage-dropdown-label">{currentStage}</span>
+                <svg width="10" height="6" viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="#000" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/></svg>
+              </button>
+              {stageOpen && (
+                <div className="stage-dropdown-list">
+                  {STAGES.map(s => (
+                    <button
+                      key={s}
+                      className={`stage-option ${s === currentStage ? 'active' : ''}`}
+                      onClick={() => { setCurrentStage(s); setStageOpen(false); }}
+                    >
+                      {s}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
         </div>
       );
