@@ -6,6 +6,7 @@
   <title>Mobile Companion — FactoryFix Prototype</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://use.typekit.net/gkr8rvz.css" rel="stylesheet">
   <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
   <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
@@ -119,10 +120,61 @@
       font-size: 11px;
     }
 
+    /* Navbar */
+    .navbar {
+      background: var(--ff-black);
+      height: 48px;
+      display: flex;
+      align-items: center;
+      padding: 0 16px;
+      flex-shrink: 0;
+      gap: 12px;
+      position: relative;
+    }
+
+    .navbar-logo {
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+    }
+
+    .navbar-back-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 0;
+      white-space: nowrap;
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    .navbar-back-btn:active { opacity: 0.6; }
+
+    .navbar-hamburger {
+      margin-left: auto;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .navbar-hamburger:active { opacity: 0.6; }
+
     /* Shared header */
     .header-dark {
-      background: var(--ff-black);
-      padding: 0 16px 12px;
+      background: #1E293B; /* shade-860 */
+      padding: 12px 16px;
       flex-shrink: 0;
     }
 
@@ -134,16 +186,16 @@
       padding: 8px 0 12px;
     }
 
-    /* TODO: replace Inter 700 with Museo when font is available */
     .inbox-title {
       font-size: 17px;
-      font-weight: 700;
+      font-weight: 900;
       color: #fff;
+      font-family: 'museo-sans', 'Inter', sans-serif;
     }
 
     .unread-badge {
-      background: var(--ff-green);
-      color: var(--ff-black);
+      background: var(--ff-purple);
+      color: #fff;
       font-size: 11px;
       font-weight: 700;
       padding: 2px 8px;
@@ -151,14 +203,14 @@
     }
 
     .search-bar {
-      background: #1E293B;
-      border: 1px solid #334155;
+      background: #334155; /* shade-840 */
+      border: 1px solid #475569; /* shade-820 */
       border-radius: 6px;
       padding: 8px 12px;
       display: flex;
       align-items: center;
       gap: 8px;
-      color: var(--ff-text-muted);
+      color: #94A3B8; /* base-400 */
       font-size: 13px;
     }
 
@@ -183,34 +235,41 @@
     /* Candidate row */
     .candidate-row {
       background: #fff;
-      padding: 12px 16px;
+      padding: 20px 16px 20px 28px;
       display: flex;
-      gap: 12px;
+      gap: 14px;
       align-items: flex-start;
-      border-bottom: 0.5px solid var(--ff-border);
+      border-bottom: 1px solid #E2E8F0;
       cursor: pointer;
       min-height: 44px;
       transition: background 0.1s;
+      position: relative;
     }
 
-    .candidate-row:active { background: var(--ff-washed-green); }
+    .candidate-row:active { background: var(--ff-gray-bg); }
 
-    .candidate-row.unread {
-      border-left: 3px solid var(--ff-green);
-      padding-left: 13px;
+    .unread-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--ff-purple);
+      position: absolute;
+      left: 10px;
+      top: 28px;
     }
 
     /* Avatar */
     .avatar {
-      width: 36px;
-      height: 36px;
+      width: 40px;
+      height: 40px;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 11px;
+      font-size: 13px;
       font-weight: 700;
-      color: #fff;
+      color: var(--ff-text-secondary);
+      background: #E2E8F0;
       flex-shrink: 0;
     }
 
@@ -225,7 +284,7 @@
     }
 
     .row-name {
-      font-size: 13px;
+      font-size: 14px;
       font-weight: 700;
       color: var(--ff-black);
       white-space: nowrap;
@@ -233,72 +292,41 @@
       text-overflow: ellipsis;
     }
 
+    .row-name-suffix {
+      font-weight: 400;
+      color: var(--ff-text-secondary);
+    }
+
     .row-time {
-      font-size: 10px;
+      font-size: 12px;
       color: var(--ff-text-muted);
       flex-shrink: 0;
-    }
-
-    .row-job {
-      font-size: 11px;
-      color: var(--ff-text-muted);
-      margin-top: 1px;
       white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
     }
 
-    .row-preview-line {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 8px;
+    .row-applied {
+      font-size: 12px;
+      color: var(--ff-text-muted);
       margin-top: 2px;
     }
 
     .row-preview {
-      font-size: 12px;
+      font-size: 14px;
+      line-height: 1.45;
       color: var(--ff-text-secondary);
-      white-space: nowrap;
+      margin-top: 8px;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
       overflow: hidden;
-      text-overflow: ellipsis;
     }
 
-    .row-preview.bold { font-weight: 600; color: var(--ff-black); }
-
-    .unread-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: var(--ff-green);
-      flex-shrink: 0;
-    }
-
-    .score-line {
-      font-size: 12px;
-      color: var(--ff-text-secondary);
-      margin-top: 2px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    .score-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      flex-shrink: 0;
-    }
-
-    .score-dot.green { background: var(--ff-success); }
-    .score-dot.yellow { background: var(--ff-caution); }
-    .score-dot.red { background: var(--ff-critical); }
 
     /* ── Candidate Detail ── */
 
     .detail-header {
-      background: var(--ff-black);
-      padding: 0 16px 0;
+      background: #1E293B; /* shade-860, same as inbox header */
+      padding: 12px 16px 0;
       flex-shrink: 0;
     }
 
@@ -333,14 +361,43 @@
       text-overflow: ellipsis;
     }
 
-    .stage-pill {
-      border: 1px solid var(--ff-green);
-      color: var(--ff-green);
-      font-size: 10px;
-      font-weight: 600;
-      padding: 2px 10px;
-      border-radius: 20px;
+    .stage-dropdown-btn {
+      background: #fff;
+      border: 1px solid #E2E8F0;
+      border-radius: 6px;
+      padding: 4px 10px;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--ff-black);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      font-family: inherit;
       white-space: nowrap;
+    }
+
+    .stage-dropdown-btn:active { opacity: 0.7; }
+
+    .stage-chevron {
+      color: var(--ff-text-muted);
+    }
+
+    .detail-download-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 2px;
+      display: flex;
+      align-items: center;
+    }
+
+    .detail-download-btn:active { opacity: 0.6; }
+
+    .detail-actions-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
       flex-shrink: 0;
     }
 
@@ -357,13 +414,29 @@
     }
 
     .score-badge {
-      background: var(--ff-success);
-      color: #fff;
-      font-size: 11px;
+      background: #BEF4D5; /* primary-100 */
+      color: var(--ff-black);
+      font-size: 13px;
       font-weight: 700;
-      padding: 2px 8px;
-      border-radius: 4px;
+      padding: 4px 10px;
+      border-radius: 6px;
       flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      border: 1px solid #E2E8F0;
+    }
+
+    .score-badge-star {
+      color: #184F32; /* primary-800 */
+      display: flex;
+    }
+
+    .score-badge-num {
+      text-decoration: underline;
+      text-decoration-color: #3B82F6;
+      text-underline-offset: 3px;
+      text-decoration-thickness: 2px;
     }
 
     /* Tabs */
@@ -371,7 +444,7 @@
       display: flex;
       gap: 4px;
       padding: 0 16px 12px;
-      background: var(--ff-black);
+      background: #1E293B; /* shade-860 */
     }
 
     .tab-btn {
@@ -401,75 +474,71 @@
     .conversation-area {
       flex: 1;
       overflow-y: auto;
-      padding: 16px;
+      padding: 12px;
       background: #fff;
       display: flex;
       flex-direction: column;
-      gap: 16px;
+      gap: 8px;
     }
 
-    .msg-group { display: flex; flex-direction: column; gap: 4px; }
-
-    .msg-label {
-      font-size: 10px;
-      font-weight: 600;
-      color: var(--ff-text-muted);
+    .msg-card {
+      padding: 12px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
     }
 
-    .msg-label.ai {
-      color: var(--ff-purple);
+    .msg-card.ai {
+      background: rgba(174, 53, 247, 0.05);
+      border: 1px solid rgba(179, 54, 255, 0.1);
+      border-radius: 12px 12px 4px 12px;
+    }
+
+    .msg-card.candidate {
+      background: #F1F5F9;
+      border: 1px solid #EBF0F5;
+      border-radius: 4px 8px 8px 8px;
+      padding: 8px;
+      gap: 4px;
+    }
+
+    .msg-card-header {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      height: 16px;
+    }
+
+    .msg-sender {
+      font-size: 12px;
+      font-weight: 700;
+      color: #334155;
+      line-height: 18px;
+    }
+
+    .ai-badge {
+      font-size: 12px;
+      font-weight: 700;
+      background: rgba(179, 54, 255, 0.1);
+      color: #5F30D1;
+      padding: 0 4px;
+      border-radius: 16px;
       display: flex;
       align-items: center;
       gap: 4px;
     }
 
-    .ai-badge {
-      font-size: 9px;
-      font-weight: 700;
-      letter-spacing: 0.05em;
-      background: var(--ff-washed-purple);
-      color: var(--ff-purple);
-      padding: 1px 6px;
-      border-radius: 4px;
-    }
-
-    .msg-label.candidate { text-align: left; }
-    .msg-label.recruiter { text-align: right; }
-
-    .bubble {
-      padding: 10px 14px;
-      font-size: 13px;
-      line-height: 1.45;
-      max-width: 85%;
-    }
-
-    .bubble.candidate {
-      background: var(--ff-gray-bg);
-      color: var(--ff-black);
-      border-radius: 12px 12px 12px 3px;
-      align-self: flex-start;
-    }
-
-    .bubble.ai {
-      background: var(--ff-washed-purple);
-      color: var(--ff-black);
-      border-radius: 12px 12px 12px 3px;
-      align-self: flex-start;
-    }
-
-    .bubble.recruiter {
-      background: var(--ff-black);
-      color: #fff;
-      border-radius: 12px 12px 3px 12px;
-      align-self: flex-end;
-    }
-
     .msg-time {
-      font-size: 10px;
-      color: var(--ff-text-muted);
+      font-size: 12px;
+      color: var(--ff-text-secondary);
+      margin-left: auto;
     }
 
-    .msg-time.right { text-align: right; }
+    .msg-body {
+      font-size: 14px;
+      line-height: 21px;
+      color: #0F172A;
+    }
 
     /* Reply bar */
     .reply-bar {
@@ -558,30 +627,22 @@
     .action-chip:active { opacity: 0.7; }
 
     /* Stage dropdown */
-    .stage-picker {
+    .stage-dropdown-wrapper {
+      position: relative;
+    }
+
+    .stage-dropdown-list {
+      position: absolute;
+      top: 100%;
+      right: 0;
+      margin-top: 4px;
       background: #fff;
-      border-top: 0.5px solid var(--ff-border);
-      flex-shrink: 0;
-    }
-
-    .stage-picker-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 10px 16px;
-      border-bottom: 0.5px solid var(--ff-border);
-    }
-
-    .stage-picker-close {
-      background: none;
-      border: none;
-      font-size: 16px;
-      color: var(--ff-text-muted);
-      cursor: pointer;
-      padding: 4px 8px;
-      min-height: 44px;
-      display: flex;
-      align-items: center;
+      border: 1px solid #E2E8F0;
+      border-radius: 6px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+      overflow: hidden;
+      z-index: 10;
+      min-width: 140px;
     }
 
     .stage-option {
@@ -762,40 +823,58 @@
       AW: '#159B54',
       JT: '#3B82F6',
       PP: '#E86833',
+      DL: '#2563EB',
     };
 
     const UNREAD_MESSAGES = [
       {
         id: 1, initials: 'MJ', name: 'Marcus Johnson', job: 'CNC Machine Operator',
-        company: 'Precision Manufacturing Inc.', preview: 'Sounds good, I can come in Thursday',
+        company: 'Precision Manufacturing Inc.', appliedTo: 'CNC Machine Operator',
+        preview: 'Sounds good, I can come in Thursday',
         time: '2m', isUnread: true, score: 91, status: 'Screening',
       },
       {
         id: 2, initials: 'SC', name: 'Sarah Chen', job: 'Forklift Operator',
-        company: 'Midwest Logistics Co.', preview: 'What are the hours for this position?',
+        company: 'Midwest Logistics Co.', appliedTo: 'Forklift Operator – 1st Shift',
+        preview: 'What are the hours for this position?',
         time: '18m', isUnread: true, score: 78, status: 'Screening',
       },
       {
         id: 3, initials: 'MR', name: 'Miguel Rodriguez', job: 'Welding Technician',
-        company: 'Summit Metal Works', preview: 'Yes I have 6 years TIG experience',
+        company: 'Summit Metal Works', appliedTo: 'TIG Welder',
+        preview: 'Yes I have 6 years TIG experience',
         time: '1h', isUnread: true, score: 84, status: 'Interview',
       },
     ];
 
-    const NEW_APPLICANTS = [
+    const MORE_UNREAD = [
       {
         id: 4, initials: 'AW', name: 'Ashley Williams', job: 'Quality Inspector',
-        company: 'Atlas Fabrication', time: '2h', score: 87, scoreColor: 'green', status: 'Screening',
+        company: 'Atlas Fabrication', appliedTo: 'Quality Inspector – 2nd Shift',
+        preview: 'I can start as early as next Monday',
+        time: '2h', isUnread: true, score: 87, status: 'Screening',
       },
       {
         id: 5, initials: 'JT', name: 'James Thompson', job: 'Industrial Maintenance Tech',
-        company: 'Great Lakes Stamping', time: '3h', score: 74, scoreColor: 'yellow', status: 'Screening',
+        company: 'Great Lakes Stamping', appliedTo: 'Industrial Maintenance Technician',
+        preview: 'Do you offer any shift differential?',
+        time: '3h', isUnread: true, score: 74, status: 'Interview',
       },
       {
         id: 6, initials: 'PP', name: 'Priya Patel', job: 'Assembly Line Worker',
-        company: 'Heartland Industrial', time: '5h', score: 61, scoreColor: 'red', status: 'Screening',
+        company: 'Heartland Industrial', appliedTo: 'Production Line Assembler',
+        preview: 'Yes I have my own steel toes and PPE',
+        time: '5h', isUnread: true, score: 61, status: 'Screening',
+      },
+      {
+        id: 7, initials: 'DL', name: 'David Lee', job: 'CNC Programmer',
+        company: 'Apex Precision Parts', appliedTo: 'CNC Programmer / Setup',
+        preview: 'I also have Fanuc and Siemens experience',
+        time: '6h', isUnread: true, score: 88, status: 'Screening',
       },
     ];
+
+    const ALL_UNREAD = [...UNREAD_MESSAGES, ...MORE_UNREAD];
 
     const CONVERSATIONS = {
       1: [
@@ -854,7 +933,7 @@
 
     function Avatar({ initials }) {
       return (
-        <div className="avatar" style={{ background: AVATAR_COLORS[initials] || '#6C40E5' }}>
+        <div className="avatar">
           {initials}
         </div>
       );
@@ -863,15 +942,29 @@
     /* ── Inbox Screen ── */
 
     function InboxScreen({ onSelectCandidate }) {
-      const totalUnread = UNREAD_MESSAGES.length + NEW_APPLICANTS.length;
       return (
         <div className="phone-inner">
           <StatusBar />
+          <div className="navbar">
+            <div className="navbar-logo">
+              {/* FactoryFix hex logo */}
+              <img src="/assets/ff-logo-hex.svg" alt="FactoryFix" width="28" height="24" />
+            </div>
+            <button className="navbar-back-btn">
+              Show full version
+            </button>
+            <button className="navbar-hamburger">
+              <svg width="20" height="14" viewBox="0 0 20 14" fill="none">
+                <line x1="0" y1="1" x2="20" y2="1" stroke="#fff" strokeWidth="2" strokeLinecap="round"/>
+                <line x1="0" y1="7" x2="20" y2="7" stroke="#fff" strokeWidth="2" strokeLinecap="round"/>
+                <line x1="0" y1="13" x2="20" y2="13" stroke="#fff" strokeWidth="2" strokeLinecap="round"/>
+              </svg>
+            </button>
+          </div>
           <div className="header-dark">
             <div className="inbox-title-row">
-              {/* TODO: replace Inter 700 with Museo when font is available */}
-              <span className="inbox-title">Needs Attention</span>
-              <span className="unread-badge">{totalUnread} unread</span>
+              <span className="inbox-title">Mobile Inbox</span>
+              <span className="unread-badge">{ALL_UNREAD.length} unread</span>
             </div>
             <div className="search-bar">
               <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="6" cy="6" r="5" stroke="#64748B" strokeWidth="1.5"/><line x1="10" y1="10" x2="13" y2="13" stroke="#64748B" strokeWidth="1.5" strokeLinecap="round"/></svg>
@@ -879,38 +972,17 @@
             </div>
           </div>
           <div className="list-area">
-            <div className="section-label">Unread messages</div>
-            {UNREAD_MESSAGES.map(c => (
-              <div key={c.id} className="candidate-row unread" onClick={() => onSelectCandidate(c)}>
-                <Avatar initials={c.initials} />
-                <div className="row-content">
-                  <div className="row-top">
-                    <span className="row-name">{c.name}</span>
-                    <span className="row-time">{c.time}</span>
-                  </div>
-                  <div className="row-job">{c.job} · {c.company}</div>
-                  <div className="row-preview-line">
-                    <span className="row-preview bold">{c.preview}</span>
-                    <div className="unread-dot" />
-                  </div>
-                </div>
-              </div>
-            ))}
-
-            <div className="section-label">New applicants</div>
-            {NEW_APPLICANTS.map(c => (
+            {ALL_UNREAD.map(c => (
               <div key={c.id} className="candidate-row" onClick={() => onSelectCandidate(c)}>
+                <div className="unread-dot" />
                 <Avatar initials={c.initials} />
                 <div className="row-content">
                   <div className="row-top">
-                    <span className="row-name">{c.name}</span>
+                    <span className="row-name">{c.name} <span className="row-name-suffix">messaged you</span></span>
                     <span className="row-time">{c.time}</span>
                   </div>
-                  <div className="row-job">{c.job} · {c.company}</div>
-                  <div className="score-line">
-                    <span>Applied via FactoryFix · Score {c.score}</span>
-                    <div className={`score-dot ${c.scoreColor}`} />
-                  </div>
+                  <div className="row-applied">Applied to {c.appliedTo}</div>
+                  <div className="row-preview">{c.preview}</div>
                 </div>
               </div>
             ))}
@@ -935,16 +1007,58 @@
       return (
         <div className="phone-inner">
           <StatusBar />
+          <div className="navbar">
+            <div className="navbar-logo">
+              <img src="/assets/ff-logo-hex.svg" alt="FactoryFix" width="28" height="24" />
+            </div>
+            <button className="navbar-back-btn" onClick={onBack}>
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M7.5 2.5L4 6l3.5 3.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
+              Back
+            </button>
+            <button className="navbar-hamburger">
+              <svg width="20" height="14" viewBox="0 0 20 14" fill="none">
+                <line x1="0" y1="1" x2="20" y2="1" stroke="#fff" strokeWidth="2" strokeLinecap="round"/>
+                <line x1="0" y1="7" x2="20" y2="7" stroke="#fff" strokeWidth="2" strokeLinecap="round"/>
+                <line x1="0" y1="13" x2="20" y2="13" stroke="#fff" strokeWidth="2" strokeLinecap="round"/>
+              </svg>
+            </button>
+          </div>
           <div className="detail-header">
             <div className="detail-top-row">
-              <span className="back-btn" onClick={onBack}>‹ Inbox</span>
-              {/* TODO: replace Inter 700 with Museo when font is available */}
               <span className="detail-name" style={{ flex: 1 }}>{candidate.name}</span>
-              <span className="stage-pill">{currentStage}</span>
+              <div className="detail-actions-right">
+                <div className="stage-dropdown-wrapper">
+                  <button className="stage-dropdown-btn" onClick={() => setStageOpen(!stageOpen)}>
+                    {currentStage}
+                    <svg className="stage-chevron" width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M3 4.5L6 7.5L9 4.5" stroke="#64748B" strokeWidth="1.5" strokeLinejoin="round"/></svg>
+                  </button>
+                  {stageOpen && (
+                    <div className="stage-dropdown-list">
+                      {STAGES.map(s => (
+                        <button
+                          key={s}
+                          className={`stage-option ${s === currentStage ? 'active' : ''}`}
+                          onClick={() => { setCurrentStage(s); setStageOpen(false); }}
+                        >
+                          {s}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+                <button className="detail-download-btn">
+                  <img src="/assets/icon-download.svg" alt="Download" width="22" height="22" />
+                </button>
+              </div>
             </div>
             <div className="detail-meta-row">
               <span className="detail-job">{candidate.job} · {candidate.company}</span>
-              <span className="score-badge">Score {candidate.score || 91}</span>
+              <span className="score-badge">
+                <span className="score-badge-star">
+                  <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1l1.76 3.57 3.94.57-2.85 2.78.67 3.93L7 10.07l-3.52 1.78.67-3.93L1.3 5.14l3.94-.57L7 1z" fill="#184F32"/></svg>
+                </span>
+                <span className="score-badge-num">{candidate.score ? (candidate.score / 20).toFixed(1) : '4.5'}</span>
+              </span>
             </div>
           </div>
 
@@ -964,19 +1078,22 @@
           {activeTab === 'conversation' && (
             <div className="conversation-area">
               {messages.map(msg => (
-                <div key={msg.id} className="msg-group">
-                  {msg.isBotMessage && (
-                    <div className="msg-label ai">
-                      <span className="ai-badge">AI RECRUITER</span>
-                    </div>
-                  )}
-                  {msg.isProMessage && (
-                    <div className="msg-label candidate">{candidate.name}</div>
-                  )}
-                  <div className={`bubble ${msg.isBotMessage ? 'ai' : msg.isProMessage ? 'candidate' : 'recruiter'}`}>
-                    {msg.content}
+                <div key={msg.id} className={`msg-card ${msg.isBotMessage ? 'ai' : 'candidate'}`}>
+                  <div className="msg-card-header">
+                    {msg.isBotMessage ? (
+                      <span className="ai-badge">
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                          <path d="M9.8 12.8L10.7 13.2L9.8 13.6L9.4 14.5L9 13.6L8.1 13.2L9 12.8L9.4 11.5L9.8 12.8ZM8.2 6.5C8.27 6.49 8.34 6.5 8.4 6.54C8.46 6.57 8.51 6.62 8.54 6.69C8.56 6.75 8.57 6.82 8.55 6.88L7.4 10.1H9.5C9.56 10.1 9.61 10.12 9.66 10.15C9.71 10.18 9.74 10.22 9.77 10.27C9.79 10.32 9.8 10.38 9.79 10.43C9.78 10.49 9.76 10.54 9.72 10.58L4.8 15.3C4.75 15.35 4.69 15.38 4.62 15.39C4.55 15.4 4.48 15.39 4.42 15.36C4.36 15.33 4.31 15.28 4.29 15.22C4.26 15.16 4.26 15.09 4.28 15.03L5.43 11.8H3.3C3.24 11.8 3.19 11.78 3.14 11.75C3.09 11.72 3.05 11.68 3.02 11.63C3 11.58 2.99 11.52 3 11.47C3.01 11.41 3.04 11.36 3.08 11.32L7.99 6.54C8.04 6.49 8.11 6.47 8.18 6.5H8.2ZM5.4 7.1L6.6 7.5L5.4 7.9L5 9L4.6 7.9L3.4 7.5L4.6 7.1L5 6L5.4 7.1Z" fill="url(#copilotGrad)"/>
+                          <defs><radialGradient id="copilotGrad" cx="0" cy="0" r="1" gradientTransform="translate(6.5 10) scale(8)"><stop stopColor="#B336FF"/><stop offset="1" stopColor="#6C40E5"/></radialGradient></defs>
+                        </svg>
+                        Copilot
+                      </span>
+                    ) : (
+                      <span className="msg-sender">{candidate.name}</span>
+                    )}
+                    <span className="msg-time">{msg.timestamp}</span>
                   </div>
-                  <div className={`msg-time ${msg.isEmployerMessage ? 'right' : ''}`}>{msg.timestamp}</div>
+                  <div className="msg-body">{msg.content}</div>
                 </div>
               ))}
             </div>
@@ -1057,25 +1174,6 @@
             </div>
           )}
 
-          {/* Stage picker — slides up above action sheet */}
-          {stageOpen && (
-            <div className="stage-picker">
-              <div className="stage-picker-header">
-                <span style={{ fontSize: 13, fontWeight: 600 }}>Move to stage</span>
-                <button className="stage-picker-close" onClick={() => setStageOpen(false)}>✕</button>
-              </div>
-              {STAGES.map(s => (
-                <button
-                  key={s}
-                  className={`stage-option ${s === currentStage ? 'active' : ''}`}
-                  onClick={() => { setCurrentStage(s); setStageOpen(false); }}
-                >
-                  {s}
-                </button>
-              ))}
-            </div>
-          )}
-
           {/* Action sheet — all tabs */}
           <div className="action-sheet">
             <button className="action-chip primary">
@@ -1125,7 +1223,7 @@
       return (
         <div className="desktop-layout">
           <div>
-            <div className="phone-frame-label">Inbox — Needs Attention</div>
+            <div className="phone-frame-label">Mobile Inbox</div>
             <div className="phone-frame">
               <InboxScreen onSelectCandidate={setSelectedCandidate} />
             </div>
