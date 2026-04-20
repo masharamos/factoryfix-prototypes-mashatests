@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ONE-5408 — AI Recruiter Templates: Admin Governance & Ownership</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <style>
     :root {
       --ff-green: #53D58B;
@@ -192,13 +192,14 @@
 
     /* Recruiter Card */
     .recruiter-card {
-      background: white; border-radius: 16px; overflow: hidden;
+      background: white; border-radius: 16px; overflow: visible;
       box-shadow: var(--ff-shadow-card); transition: box-shadow 200ms;
     }
     .recruiter-card:hover { box-shadow: var(--ff-shadow-hover); }
 
     .card-header {
       padding: 24px; color: white; position: relative;
+      border-radius: 16px 16px 0 0;
     }
     .card-header.purple {
       background: linear-gradient(90deg, #AE35F7 15.7%, #5F30D1 71%);
@@ -247,7 +248,7 @@
     .menu-trigger {
       width: 28px; height: 28px; display: flex; align-items: center; justify-content: center;
       cursor: pointer; border-radius: 6px; transition: background 150ms;
-      background: transparent; border: none; flex-shrink: 0;
+      background: transparent; border: none; flex-shrink: 0; position: relative;
     }
     .menu-trigger:hover { background: rgba(255,255,255,0.2); }
     .menu-trigger svg { width: 20px; height: 20px; fill: white; stroke: none; }
@@ -271,7 +272,7 @@
 
     /* Dropdown menu */
     .dropdown-menu {
-      position: absolute; top: calc(100% - 16px); right: 24px; z-index: 100;
+      position: absolute; top: 56px; right: 24px; z-index: 100;
       background: white; border-radius: 6px; overflow: hidden;
       box-shadow: var(--ff-shadow-dropdown); min-width: 180px;
       display: none;
@@ -284,12 +285,11 @@
       line-height: 18px; display: flex; align-items: center; gap: 8px;
     }
     .dropdown-item:hover { background: var(--ff-purple-light); font-weight: 700; }
-    .dropdown-item.destructive { color: var(--ff-critical); }
-    .dropdown-item.destructive:hover { background: #FFF4F4; }
+    .dropdown-item.destructive { color: var(--ff-black-blue); }
+    .dropdown-item.destructive:hover { background: var(--ff-purple-light); font-weight: 700; }
     .dropdown-divider { height: 1px; background: var(--ff-base-100); margin: 2px 0; }
     .dropdown-item svg {
-      width: 16px; height: 16px; stroke: currentColor; stroke-width: 2; fill: none;
-      flex-shrink: 0;
+      display: none;
     }
 
     /* ---- Modals ---- */
@@ -307,10 +307,11 @@
       to { opacity: 1; transform: scale(1); }
     }
     .modal h2 {
-      font-size: 20px; font-weight: 700; margin-bottom: 8px;
+      font-size: 24px; font-weight: 900; line-height: 36px; margin-bottom: 8px;
+      font-family: 'Museo', var(--font-heading), sans-serif;
     }
     .modal p.subtitle {
-      font-size: 14px; color: var(--ff-base-800); line-height: 21px; margin-bottom: 24px;
+      font-size: 16px; color: var(--ff-base-800); line-height: 24px; margin-bottom: 24px;
     }
 
     /* Form elements */
@@ -320,19 +321,20 @@
       color: var(--ff-black-blue);
     }
     .form-select {
-      width: 100%; padding: 12px 16px; border: 1px solid var(--ff-base-100);
+      width: 100%; padding: 12px 16px; border: 1px solid #CBD5E1;
       border-radius: 6px; font-size: 16px; font-family: var(--font-body);
+      color: var(--ff-black-blue);
       background: white; appearance: none; cursor: pointer;
       background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='%2364748B' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
       background-repeat: no-repeat; background-position: right 16px center;
     }
-    .form-select:focus { outline: none; border-color: var(--ff-purple); border-width: 2px; padding: 11px 15px; }
+    .form-select:focus { outline: none; border-color: #53D58B; border-width: 2px; padding: 11px 15px; }
     .form-helper {
       font-size: 12px; color: var(--ff-base-800); margin-top: 6px; line-height: 18px;
     }
     .form-info-box {
       background: #FFF4D8; border-radius: 8px; padding: 12px 16px;
-      font-size: 13px; color: var(--ff-base-820); line-height: 20px;
+      font-size: 14px; color: #7B5B06; line-height: 21px;
       display: flex; gap: 8px; align-items: flex-start; margin-bottom: 24px;
     }
     .form-info-box svg {
@@ -360,19 +362,20 @@
       display: flex; justify-content: flex-end; gap: 12px; margin-top: 24px;
     }
     .btn-cancel {
-      padding: 10px 20px; border: none; background: transparent;
-      color: var(--ff-base-800); font-size: 14px; font-weight: 600;
+      padding: 12px 24px; border: none; background: transparent;
+      color: var(--ff-black-blue); font-size: 16px; font-weight: 700;
       cursor: pointer; border-radius: 8px; font-family: var(--font-body);
     }
     .btn-cancel:hover { background: var(--ff-base-40); }
     .btn-confirm {
-      padding: 10px 20px; border: none; background: var(--ff-purple);
-      color: white; font-size: 14px; font-weight: 600; cursor: pointer;
-      border-radius: 8px; font-family: var(--font-body); transition: background 150ms;
+      padding: 12px 24px; border: none; background: var(--ff-black-blue);
+      color: white; font-size: 16px; font-weight: 700; cursor: pointer;
+      border-radius: 8px; font-family: var(--font-body); transition: all 150ms;
     }
-    .btn-confirm:hover { background: var(--ff-purple-dark); }
+    .btn-confirm:hover { opacity: 0.9; }
+    .btn-confirm:active { transform: scale(0.98); }
     .btn-confirm:disabled { opacity: 0.5; cursor: not-allowed; }
-    .btn-confirm.destructive { background: var(--ff-critical); }
+    .btn-confirm.destructive { background: #CF3E3E; }
     .btn-confirm.destructive:hover { background: #B91F1F; }
 
     /* Toast */
@@ -564,29 +567,10 @@
               <span class="card-title">Copilot</span>
               <span class="card-badge-default">FactoryFix Default</span>
             </div>
-            <button class="menu-trigger" onclick="toggleMenu(event, 'menu-copilot')">
-              <svg viewBox="0 0 20 20"><circle cx="10" cy="4" r="1.5" fill="white"/><circle cx="10" cy="10" r="1.5" fill="white"/><circle cx="10" cy="16" r="1.5" fill="white"/></svg>
-            </button>
           </div>
           <div class="card-description">AI-powered recruiter for skilled trades and manufacturing roles</div>
           <div class="card-ownership">
-            <span class="card-owner">Owned by Ashley McQueen (you)</span>
-            <span class="card-edited">Last edited Mar 15 by Ashley McQueen</span>
-          </div>
-          <div class="dropdown-menu" id="menu-copilot">
-            <button class="dropdown-item" onclick="openEditPanel('copilot')">
-              <svg viewBox="0 0 16 16"><path d="M11.333 2.00004C11.508 1.82494 11.716 1.68605 11.945 1.59129C12.175 1.49653 12.421 1.44775 12.669 1.44775C12.918 1.44775 13.164 1.49653 13.393 1.59129C13.623 1.68605 13.831 1.82494 14.006 2.00004C14.181 2.17513 14.319 2.383 14.414 2.61236C14.509 2.84173 14.558 3.08745 14.558 3.33571C14.558 3.58397 14.509 3.82969 14.414 4.05905C14.319 4.28842 14.181 4.49628 14.006 4.67138L5.166 13.5114L1.5 14.5L2.489 10.8334L11.333 2.00004Z"/></svg>
-              Edit
-            </button>
-            <button class="dropdown-item" onclick="openTransferModal('Copilot')">
-              <svg viewBox="0 0 16 16"><path d="M5.333 9.333L2 6L5.333 2.667M2 6H10.667C11.374 6 12.052 6.281 12.552 6.781C13.053 7.281 13.333 7.96 13.333 8.667V13.333"/></svg>
-              Transfer ownership
-            </button>
-            <div class="dropdown-divider"></div>
-            <button class="dropdown-item destructive" onclick="openDeleteModal('Copilot')">
-              <svg viewBox="0 0 16 16"><path d="M2 4H14M12.667 4V13.333C12.667 14 12 14.667 11.333 14.667H4.667C4 14.667 3.333 14 3.333 13.333V4M5.333 4V2.667C5.333 2 6 1.333 6.667 1.333H9.333C10 1.333 10.667 2 10.667 2.667V4"/></svg>
-              Delete
-            </button>
+            <span class="card-owner">Created by FactoryFix</span>
           </div>
         </div>
         <div class="card-body">
@@ -801,56 +785,34 @@
 
 <!-- Transfer Ownership Modal -->
 <div class="modal-overlay" id="transferModal">
-  <div class="modal">
-    <h2>Transfer ownership</h2>
-    <p class="subtitle">Select a teammate to take ownership of <strong id="transferTemplateName"></strong>. This changes who manages this recruiter template. Jobs already using it won't change.</p>
+  <div class="modal" style="position:relative">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start">
+      <h2>Transfer Ownership</h2>
+      <button onclick="closeModal('transferModal')" style="background:none;border:none;cursor:pointer;padding:4px;margin:-4px -4px 0 0">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0F172A" stroke-width="2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <p class="subtitle">The new owner can edit and delete this template. You'll keep admin access.</p>
 
     <div class="form-group">
-      <label class="form-label">Transfer to</label>
-      <div class="user-list" id="userList">
-        <div class="user-item" onclick="selectUser(this, 'Lisa Glebus')">
-          <div class="user-item-avatar" style="background:#DEFAEA;color:#184F32">LG</div>
-          <div class="user-item-info">
-            <div class="user-item-name">Lisa Glebus</div>
-            <div class="user-item-role">Org Admin</div>
-          </div>
-          <svg class="user-item-check" viewBox="0 0 20 20" fill="none"><path d="M16.667 5L7.5 14.167L3.333 10" stroke="#6C40E5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </div>
-        <div class="user-item" onclick="selectUser(this, 'Mark Scoptur')">
-          <div class="user-item-avatar" style="background:#ECEAFD;color:#5F30D1">MS</div>
-          <div class="user-item-info">
-            <div class="user-item-name">Mark Scoptur</div>
-            <div class="user-item-role">Org Admin</div>
-          </div>
-          <svg class="user-item-check" viewBox="0 0 20 20" fill="none"><path d="M16.667 5L7.5 14.167L3.333 10" stroke="#6C40E5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </div>
-        <div class="user-item" onclick="selectUser(this, 'Miguel Rodriguez')">
-          <div class="user-item-avatar" style="background:#FFF4D8;color:#7B5B06">MR</div>
-          <div class="user-item-info">
-            <div class="user-item-name">Miguel Rodriguez</div>
-            <div class="user-item-role">Recruiter</div>
-          </div>
-          <svg class="user-item-check" viewBox="0 0 20 20" fill="none"><path d="M16.667 5L7.5 14.167L3.333 10" stroke="#6C40E5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </div>
-        <div class="user-item" onclick="selectUser(this, 'Sarah Chen')">
-          <div class="user-item-avatar" style="background:#D4F4E5;color:#1B7A45">SC</div>
-          <div class="user-item-info">
-            <div class="user-item-name">Sarah Chen</div>
-            <div class="user-item-role">Recruiter</div>
-          </div>
-          <svg class="user-item-check" viewBox="0 0 20 20" fill="none"><path d="M16.667 5L7.5 14.167L3.333 10" stroke="#6C40E5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </div>
-      </div>
+      <label class="form-label" style="font-weight:700">Transfer to</label>
+      <select class="form-select" id="transferSelect" onchange="onTransferSelect(this)">
+        <option value="" disabled selected>Select a team member</option>
+        <option value="Lisa Glebus">Lisa Glebus</option>
+        <option value="Mark Scoptur">Mark Scoptur</option>
+        <option value="Miguel Rodriguez">Miguel Rodriguez</option>
+        <option value="Sarah Chen">Sarah Chen</option>
+      </select>
     </div>
 
     <div class="form-info-box">
-      <svg viewBox="0 0 20 20"><path d="M10 6.667V10M10 13.333H10.008M18.333 10C18.333 14.602 14.602 18.333 10 18.333C5.398 18.333 1.667 14.602 1.667 10C1.667 5.398 5.398 1.667 10 1.667C14.602 1.667 18.333 5.398 18.333 10Z"/></svg>
-      <span>Changes won't update jobs already using this recruiter unless you build that separately.</span>
+      <svg viewBox="0 0 20 20" fill="none"><path d="M8.575 2.492L1.517 15.083C1.35 15.383 1.267 15.725 1.267 16.067C1.267 17.017 2.033 17.5 2.983 17.5H17.017C17.967 17.5 18.733 17.017 18.733 16.067C18.733 15.725 18.65 15.383 18.483 15.083L11.425 2.492C10.942 1.608 9.058 1.608 8.575 2.492Z" stroke="#C7A432" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M10 7.5V10.833" stroke="#C7A432" stroke-width="1.5" stroke-linecap="round"/><circle cx="10" cy="14" r="0.75" fill="#C7A432"/></svg>
+      <span><strong>Note:</strong> Jobs currently using this template won't be affected — they'll continue to run as configured</span>
     </div>
 
     <div class="modal-actions">
       <button class="btn-cancel" onclick="closeModal('transferModal')">Cancel</button>
-      <button class="btn-confirm" id="transferConfirmBtn" disabled onclick="confirmTransfer()">Transfer ownership</button>
+      <button class="btn-confirm" id="transferConfirmBtn" disabled onclick="confirmTransfer()">Transfer Ownership</button>
     </div>
   </div>
 </div>
@@ -1021,20 +983,17 @@
   // Transfer modal
   function openTransferModal(templateName) {
     currentTransferTemplate = templateName;
-    document.getElementById('transferTemplateName').textContent = templateName;
     document.getElementById('transferModal').classList.add('open');
     document.querySelectorAll('.dropdown-menu').forEach(m => m.classList.remove('open'));
     // Reset selection
     selectedUser = null;
-    document.querySelectorAll('.user-item').forEach(u => u.classList.remove('selected'));
+    document.getElementById('transferSelect').selectedIndex = 0;
     document.getElementById('transferConfirmBtn').disabled = true;
   }
 
-  function selectUser(el, name) {
-    document.querySelectorAll('.user-item').forEach(u => u.classList.remove('selected'));
-    el.classList.add('selected');
-    selectedUser = name;
-    document.getElementById('transferConfirmBtn').disabled = false;
+  function onTransferSelect(el) {
+    selectedUser = el.value;
+    document.getElementById('transferConfirmBtn').disabled = !selectedUser;
   }
 
   function confirmTransfer() {
