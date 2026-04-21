@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ONE-5798 — Remember Interview Locations</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ff-green: #53D58B;
+      --ff-green-dark: #1B7A45;
+      --ff-success: #159B54;
+      --ff-purple: #6C40E5;
+      --ff-purple-light: #8B64F0;
+      --ff-washed-purple: #F4F4FE;
+      --ff-black-blue: #0F172A;
+      --ff-navy: #1A233B;
+      --ff-white: #FFFFFF;
+      --ff-base-40: #F1F5F9;
+      --ff-base-60: #E8F0F5;
+      --ff-base-100: #CBD5E1;
+      --ff-base-300: #A7B5C9;
+      --ff-base-400: #94A3B8;
+      --ff-base-700: #73839B;
+      --ff-base-800: #64748B;
+      --ff-base-840: #334155;
+      --ff-base-880: #0F172A;
+      --font-body: 'Inter', sans-serif;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      font-family: var(--font-body);
+      font-size: 14px; line-height: 20px;
+      color: var(--ff-base-880);
+      background: #E2E8F0;
+      -webkit-font-smoothing: antialiased;
+      display: flex; align-items: center; justify-content: center;
+      min-height: 100vh; padding: 32px 16px;
+    }
+
+    /* ---- Dialog ---- */
+    .dialog-backdrop {
+      position: fixed; inset: 0;
+      background: rgba(15, 23, 42, 0.45);
+      display: flex; align-items: center; justify-content: center;
+      padding: 24px;
+    }
+
+    .dialog {
+      background: white;
+      border-radius: 16px;
+      width: 100%; max-width: 600px;
+      max-height: calc(100vh - 48px);
+      overflow-y: auto;
+      box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.35);
+      display: flex; flex-direction: column;
+      animation: dialogIn 200ms cubic-bezier(0.2, 0.9, 0.3, 1);
+    }
+    @keyframes dialogIn {
+      from { opacity: 0; transform: translateY(10px) scale(0.98); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    /* ---- Dialog header ---- */
+    .dialog-header {
+      display: flex; justify-content: space-between; align-items: flex-start;
+      padding: 32px 32px 0;
+      gap: 16px;
+    }
+    .dialog-title {
+      font-size: 22px; font-weight: 900; color: #210E50; line-height: 1.2;
+    }
+    .dialog-close {
+      width: 28px; height: 28px; flex-shrink: 0;
+      background: transparent; border: none; cursor: pointer;
+      color: var(--ff-base-700); border-radius: 6px;
+      display: flex; align-items: center; justify-content: center;
+      transition: background 150ms, color 150ms;
+    }
+    .dialog-close:hover { background: var(--ff-base-40); color: var(--ff-base-880); }
+    .dialog-close svg { width: 20px; height: 20px; stroke: currentColor; fill: none; stroke-width: 2; }
+
+    /* ---- Dialog body ---- */
+    .dialog-body {
+      padding: 24px 32px 32px;
+      display: flex; flex-direction: column; gap: 24px;
+    }
+
+    /* ---- Section ---- */
+    .section { display: flex; flex-direction: column; gap: 12px; }
+    .section-header {
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .section-title {
+      font-size: 15px; font-weight: 700; color: var(--ff-base-880);
+    }
+    .section-body { display: flex; flex-direction: column; gap: 8px; }
+    .section-hint {
+      font-size: 13px; color: var(--ff-base-800); line-height: 18px;
+    }
+
+    /* ---- Calendar badge ---- */
+    .cal-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: #ECFDF5; border: 1px solid #A7F3D0;
+      border-radius: 999px; padding: 2px 10px 2px 6px;
+      font-size: 12px; font-weight: 600; color: #065F46;
+    }
+    .cal-badge svg { width: 14px; height: 14px; stroke: #059669; stroke-width: 2.5; fill: none; }
+
+    /* ---- Text input ---- */
+    .input-wrap { position: relative; }
+    .input-field {
+      width: 100%; border: 1px solid var(--ff-base-100);
+      border-radius: 8px; padding: 9px 40px 9px 12px;
+      font-size: 14px; font-family: var(--font-body);
+      color: var(--ff-base-880); background: white;
+      outline: none; transition: border-color 150ms, box-shadow 150ms;
+      appearance: none;
+    }
+    .input-field::placeholder { color: var(--ff-base-400); }
+    .input-field:focus {
+      border-color: var(--ff-purple);
+      box-shadow: 0 0 0 3px rgba(108, 64, 229, 0.12);
+    }
+    .input-chevron {
+      position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
+      color: var(--ff-base-400); pointer-events: none;
+    }
+    .input-chevron svg { width: 18px; height: 18px; stroke: currentColor; stroke-width: 2; fill: none; }
+
+    /* ---- Field label (small, above input) ---- */
+    .field-label {
+      font-size: 12px; font-weight: 600; color: var(--ff-base-840);
+      margin-bottom: 4px; display: block;
+    }
+    .field-label .optional {
+      font-weight: 400; color: var(--ff-base-400); margin-left: 4px;
+    }
+
+    /* ---- Pill chips ---- */
+    .chips { display: flex; gap: 8px; flex-wrap: wrap; }
+    .chip {
+      padding: 6px 14px; border-radius: 999px; font-size: 13px; font-weight: 600;
+      cursor: pointer; border: 1.5px solid var(--ff-base-100);
+      background: white; color: var(--ff-base-840);
+      transition: border-color 150ms, background 150ms, color 150ms;
+      user-select: none;
+    }
+    .chip:hover { border-color: var(--ff-base-300); }
+    .chip.selected {
+      background: var(--ff-black-blue); color: white; border-color: var(--ff-black-blue);
+    }
+
+    /* ---- Interview location section ---- */
+    #location-section {
+      display: none; flex-direction: column; gap: 6px;
+    }
+    #location-section.visible { display: flex; }
+
+    /* Location input + dropdown wrapper */
+    .location-wrap { position: relative; }
+
+    .location-input {
+      width: 100%; border: 1px solid var(--ff-base-100);
+      border-radius: 8px; padding: 9px 40px 9px 12px;
+      font-size: 14px; font-family: var(--font-body);
+      color: var(--ff-base-880); background: white;
+      outline: none; transition: border-color 150ms, box-shadow 150ms;
+    }
+    .location-input::placeholder { color: var(--ff-base-400); }
+    .location-input:focus {
+      border-color: var(--ff-purple);
+      box-shadow: 0 0 0 3px rgba(108, 64, 229, 0.12);
+    }
+    .location-input.dropdown-open {
+      border-bottom-left-radius: 0; border-bottom-right-radius: 0;
+      border-color: var(--ff-purple);
+      box-shadow: 0 0 0 3px rgba(108, 64, 229, 0.12);
+    }
+
+    /* Dropdown */
+    .location-dropdown {
+      display: none;
+      position: absolute; top: 100%; left: 0; right: 0;
+      background: white;
+      border: 1px solid var(--ff-purple);
+      border-top: none;
+      border-bottom-left-radius: 8px; border-bottom-right-radius: 8px;
+      box-shadow: 0 8px 16px rgba(15, 23, 42, 0.10);
+      z-index: 10; overflow: hidden;
+    }
+    .location-dropdown.open { display: block; }
+
+    .location-option {
+      padding: 9px 12px; font-size: 14px; color: var(--ff-base-880);
+      cursor: pointer; display: flex; align-items: center; gap: 10px;
+      transition: background 100ms;
+      line-height: 20px;
+    }
+    .location-option:hover { background: var(--ff-base-40); }
+    .location-option.highlighted { background: var(--ff-base-40); }
+    .location-option svg { display: none; }
+    .location-option .match { font-weight: 700; color: var(--ff-base-880); }
+
+    .dropdown-empty {
+      padding: 10px 12px; font-size: 13px; color: var(--ff-base-700);
+      font-style: italic;
+    }
+
+    /* ---- Divider ---- */
+    .divider { height: 1px; background: var(--ff-base-60); }
+
+    /* ---- Checkbox ---- */
+    .checkbox-row {
+      display: flex; gap: 10px; align-items: flex-start;
+    }
+    .checkbox-row input[type="checkbox"] {
+      width: 16px; height: 16px; flex-shrink: 0; margin-top: 2px;
+      accent-color: var(--ff-purple); cursor: pointer;
+    }
+    .checkbox-row label { font-size: 14px; cursor: pointer; }
+    .checkbox-hint { font-size: 12px; color: var(--ff-base-700); line-height: 18px; }
+
+    /* ---- Dialog footer ---- */
+    .dialog-footer {
+      display: flex; justify-content: flex-end; align-items: center;
+      gap: 8px; padding-top: 8px;
+    }
+    .btn-cancel {
+      background: transparent; border: none; cursor: pointer;
+      padding: 10px 16px; border-radius: 6px;
+      font-family: var(--font-body); font-weight: 600;
+      font-size: 14px; color: #210E50;
+      transition: background 150ms;
+    }
+    .btn-cancel:hover { background: var(--ff-base-40); }
+    .btn-primary {
+      background: var(--ff-black-blue); color: white; border: none;
+      cursor: pointer; padding: 10px 20px; border-radius: 8px;
+      font-family: var(--font-body); font-weight: 700;
+      font-size: 14px; letter-spacing: 0.1px;
+      transition: background 150ms; white-space: nowrap;
+    }
+    .btn-primary:hover { background: #1E293B; }
+  </style>
+</head>
+<body>
+
+<div class="dialog-backdrop">
+  <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="dialog-title">
+
+    <!-- Header -->
+    <div class="dialog-header">
+      <h2 class="dialog-title" id="dialog-title">Schedule Interview with Peter Bergamo</h2>
+      <button class="dialog-close" aria-label="Close">
+        <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+
+    <!-- Body -->
+    <div class="dialog-body">
+
+      <!-- Interview team -->
+      <div class="section">
+        <div class="section-header">
+          <span class="section-title">Interview team</span>
+          <span class="cal-badge">
+            <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+            Calendar connected
+          </span>
+        </div>
+        <p class="section-hint">Who needs to join this interview? Your AI recruiter will schedule the interview at a time when everyone is free, and all team members will receive invites after scheduling with the candidate.</p>
+        <div class="input-wrap">
+          <input type="text" class="input-field" placeholder="Search team members or add by email">
+          <span class="input-chevron">
+            <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+          </span>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <!-- Interview duration -->
+      <div class="section">
+        <span class="section-title">Interview duration</span>
+        <div class="chips" id="duration-chips">
+          <button class="chip selected" data-group="duration">15 mins</button>
+          <button class="chip" data-group="duration">30 mins</button>
+          <button class="chip" data-group="duration">60 mins</button>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <!-- Interview type + location -->
+      <div class="section">
+        <span class="section-title">Interview type</span>
+        <div class="chips" id="type-chips">
+          <button class="chip" data-group="type" data-type="phone">Phone call</button>
+          <button class="chip" data-group="type" data-type="video">Video call</button>
+          <button class="chip selected" data-group="type" data-type="onsite">On-site interview</button>
+        </div>
+
+        <!-- Interview location — shown only for on-site -->
+        <div id="location-section" class="visible">
+          <label class="field-label" for="location-input">Interview location</label>
+          <div class="location-wrap">
+            <input
+              type="text"
+              id="location-input"
+              class="location-input"
+              placeholder="Enter interview location"
+              autocomplete="off"
+            >
+            <span class="input-chevron">
+              <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+            </span>
+            <div class="location-dropdown" id="location-dropdown" role="listbox">
+              <!-- populated by JS -->
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <!-- Interview details -->
+      <div class="section">
+        <span class="section-title">Interview details</span>
+        <div class="section-body">
+          <div>
+            <label class="field-label" for="additional-details">
+              Additional details <span class="optional">(optional)</span>
+            </label>
+            <input type="text" id="additional-details" class="input-field" placeholder="Enter additional details">
+            <p class="section-hint" style="margin-top: 4px;">These details will be shared with the candidate.</p>
+          </div>
+          <div>
+            <label class="field-label" for="scheduling-prefs">
+              Scheduling preferences <span class="optional">(optional)</span>
+            </label>
+            <input type="text" id="scheduling-prefs" class="input-field" placeholder="Enter your schedule preferences (e.g. No Fridays.)">
+            <p class="section-hint" style="margin-top: 4px;">These preferences may be shared with the candidate to help schedule the interview.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <!-- Confirmation options -->
+      <div class="section">
+        <span class="section-title">Confirmation options</span>
+        <div class="section-body">
+          <div class="checkbox-row">
+            <input type="checkbox" id="confirm-checkbox">
+            <label for="confirm-checkbox">Require your confirmation before finalizing</label>
+          </div>
+          <p class="checkbox-hint">When checked, your AI recruiter will email you to approve the final interview time before confirming with the candidate. We'll temporarily hold the slot to prevent double-booking.</p>
+        </div>
+      </div>
+
+      <!-- Footer buttons -->
+      <div class="dialog-footer">
+        <button class="btn-cancel">Cancel</button>
+        <button class="btn-primary">Let your AI Recruiter schedule</button>
+      </div>
+
+    </div><!-- /dialog-body -->
+  </div><!-- /dialog -->
+</div><!-- /backdrop -->
+
+<script>
+  // Recent saved locations for this user/employer
+  const savedLocations = [
+    '1234 Brooks Lane, Chicago, IL',
+    '987 State Street, Chicago, IL',
+    '543 Main Street, Chicago, IL',
+    '200 W Madison St, Chicago, IL',
+    '100 N Riverside Plaza, Chicago, IL',
+  ];
+
+  const locationInput  = document.getElementById('location-input');
+  const locationDropdown = document.getElementById('location-dropdown');
+
+  function escapeRegex(str) {
+    return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  }
+
+  function highlightMatch(text, query) {
+    if (!query) return text;
+    const re = new RegExp(`(${escapeRegex(query)})`, 'gi');
+    return text.replace(re, '<span class="match">$1</span>');
+  }
+
+  function renderDropdown(query) {
+    const q = query.trim().toLowerCase();
+    const matches = q
+      ? savedLocations.filter(l => l.toLowerCase().includes(q))
+      : savedLocations;
+
+    locationDropdown.innerHTML = '';
+
+    if (matches.length === 0) {
+      locationDropdown.innerHTML = '<div class="dropdown-empty">No saved locations match</div>';
+      return;
+    }
+
+    matches.forEach((loc, i) => {
+      const opt = document.createElement('div');
+      opt.className = 'location-option' + (i === 0 ? ' highlighted' : '');
+      opt.setAttribute('role', 'option');
+      opt.innerHTML = `
+        <svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        <span>${highlightMatch(loc, query.trim())}</span>
+      `;
+      opt.addEventListener('mousedown', (e) => {
+        e.preventDefault(); // prevent blur before click
+        selectLocation(loc);
+      });
+      locationDropdown.appendChild(opt);
+    });
+  }
+
+  function openDropdown() {
+    renderDropdown(locationInput.value);
+    locationDropdown.classList.add('open');
+    locationInput.classList.add('dropdown-open');
+  }
+
+  function closeDropdown() {
+    locationDropdown.classList.remove('open');
+    locationInput.classList.remove('dropdown-open');
+  }
+
+  function selectLocation(loc) {
+    locationInput.value = loc;
+    closeDropdown();
+    locationInput.focus();
+  }
+
+  locationInput.addEventListener('focus', () => openDropdown());
+  locationInput.addEventListener('input', () => {
+    renderDropdown(locationInput.value);
+    if (!locationDropdown.classList.contains('open')) {
+      locationDropdown.classList.add('open');
+      locationInput.classList.add('dropdown-open');
+    }
+  });
+  locationInput.addEventListener('blur', () => closeDropdown());
+
+  // Keyboard nav
+  locationInput.addEventListener('keydown', (e) => {
+    const opts = locationDropdown.querySelectorAll('.location-option');
+    const highlighted = locationDropdown.querySelector('.location-option.highlighted');
+    let idx = Array.from(opts).indexOf(highlighted);
+
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      const next = Math.min(idx + 1, opts.length - 1);
+      opts.forEach(o => o.classList.remove('highlighted'));
+      opts[next]?.classList.add('highlighted');
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      const prev = Math.max(idx - 1, 0);
+      opts.forEach(o => o.classList.remove('highlighted'));
+      opts[prev]?.classList.add('highlighted');
+    } else if (e.key === 'Enter') {
+      const h = locationDropdown.querySelector('.location-option.highlighted');
+      if (h && locationDropdown.classList.contains('open')) {
+        e.preventDefault();
+        selectLocation(h.querySelector('span').textContent);
+      }
+    } else if (e.key === 'Escape') {
+      closeDropdown();
+    }
+  });
+
+  // Interview type chips — show/hide location
+  document.getElementById('type-chips').addEventListener('click', (e) => {
+    const chip = e.target.closest('[data-group="type"]');
+    if (!chip) return;
+    document.querySelectorAll('[data-group="type"]').forEach(c => c.classList.remove('selected'));
+    chip.classList.add('selected');
+
+    const locationSection = document.getElementById('location-section');
+    if (chip.dataset.type === 'onsite') {
+      locationSection.classList.add('visible');
+      locationSection.style.animation = 'fadeIn 150ms ease';
+    } else {
+      locationSection.classList.remove('visible');
+      closeDropdown();
+      locationInput.value = '';
+    }
+  });
+
+  // Duration chips
+  document.getElementById('duration-chips').addEventListener('click', (e) => {
+    const chip = e.target.closest('[data-group="duration"]');
+    if (!chip) return;
+    document.querySelectorAll('[data-group="duration"]').forEach(c => c.classList.remove('selected'));
+    chip.classList.add('selected');
+  });
+</script>
+</body>
+</html>
