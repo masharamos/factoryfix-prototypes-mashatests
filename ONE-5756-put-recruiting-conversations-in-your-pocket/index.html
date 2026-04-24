@@ -590,7 +590,6 @@
       gap: 10px;
       padding: 16px;
       background: #fff;
-      border-top: 0.5px solid var(--ff-border);
       flex-shrink: 0;
     }
 
@@ -656,7 +655,7 @@
     .action-sheet {
       display: flex;
       gap: 8px;
-      padding: 12px 16px;
+      padding: 12px 16px 0;
       background: #fff;
       border-top: 0.5px solid var(--ff-border);
       flex-shrink: 0;
@@ -1331,6 +1330,27 @@
       );
     }
 
+    function StarRating({ score }) {
+      const total = score / 20; // 0–100 → 0–5
+      return (
+        <div style={{ display: 'flex', gap: '2px', alignItems: 'center', flexShrink: 0 }}>
+          {[1,2,3,4,5].map(i => {
+            const filled = total >= i;
+            const half = !filled && total >= i - 0.5;
+            const bg = filled ? '#53D58B' : half ? '#BEF4D5' : '#F1F5F9';
+            const starFill = filled ? '#184F32' : half ? '#53D58B' : '#CBD5E1';
+            return (
+              <div key={i} style={{ width: 13, height: 13, borderRadius: 3, background: bg, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                <svg width={filled ? 7 : 8} height={filled ? 7 : 8} viewBox="0 0 8 8" fill="none">
+                  <path d="M2.86458 0.48436C3.25324 -0.16146 4.18954 -0.16146 4.5782 0.48436L5.0829 1.32301C5.22253 1.55502 5.45028 1.72049 5.71408 1.78159L6.66765 2.00244C7.40196 2.17251 7.6913 3.06298 7.19719 3.63218L6.55555 4.37135C6.37804 4.57584 6.29104 4.84357 6.31446 5.11334L6.39909 6.08849C6.46426 6.83941 5.70678 7.38976 5.01274 7.09573L4.11148 6.7139C3.86214 6.60827 3.58063 6.60827 3.3313 6.7139L2.43003 7.09572C1.736 7.38976 0.978517 6.83941 1.04369 6.08849L1.12832 5.11334C1.15173 4.84357 1.06474 4.57584 0.887228 4.37135L0.245587 3.63218C-0.248522 3.06298 0.0408095 2.17251 0.775123 2.00244L1.72869 1.78159C1.99249 1.72049 2.22024 1.55502 2.35987 1.32301L2.86458 0.48436Z" fill={starFill}/>
+                </svg>
+              </div>
+            );
+          })}
+        </div>
+      );
+    }
+
     function Avatar({ initials }) {
       return (
         <div className="avatar">
@@ -1378,7 +1398,10 @@
                 <Avatar initials={c.initials} />
                 <div className="row-content">
                   <div className="row-top">
-                    <span className="row-name">{c.name} <span className="row-name-suffix">messaged you</span></span>
+                    <span className="row-name" style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'nowrap' }}>
+                      <span>{c.name}</span>
+                      <StarRating score={c.score} />
+                    </span>
                     <span className="row-time">{c.time}</span>
                   </div>
                   <div className="row-applied">Applied to {c.appliedTo}</div>
@@ -1643,28 +1666,8 @@
             </div>
           )}
 
-          {/* Reply bar — only on Conversation tab */}
-          {activeTab === 'conversation' && (
-            <div className="reply-bar">
-              <button className="reply-plus-btn" aria-label="Add attachment">
-                <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                  <circle cx="10" cy="10" r="8.33" stroke="currentColor" strokeWidth="1.67"/>
-                  <path d="M10 6.67v6.67M6.67 10h6.67" stroke="currentColor" strokeWidth="1.67" strokeLinecap="round"/>
-                </svg>
-              </button>
-              <div className="reply-input-wrap">
-                <input className="reply-input" placeholder={`Message ${firstName}`} />
-                <button className="send-btn" aria-label="Send">
-                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                    <path d="M17.5 2.5L9.17 10.83M17.5 2.5l-5.83 15-3.34-7.5-7.5-3.33L17.5 2.5z" stroke="currentColor" strokeWidth="1.67" strokeLinecap="round" strokeLinejoin="round"/>
-                  </svg>
-                </button>
-              </div>
-            </div>
-          )}
-
-          {/* Action sheet — all tabs */}
-          <div className="action-sheet">
+          {/* Action sheet — conversation tab only */}
+          {activeTab === 'conversation' && <div className="action-sheet">
             <button className="action-chip primary">
               <svg width="16" height="16" viewBox="0 0 20 20" fill="none">
                 <rect x="2.5" y="3.75" width="15" height="13.75" rx="1.5" stroke="#fff" strokeWidth="1.67"/>
@@ -1694,7 +1697,27 @@
                 </div>
               )}
             </div>
-          </div>
+          </div>}
+
+          {/* Reply bar — only on Conversation tab */}
+          {activeTab === 'conversation' && (
+            <div className="reply-bar">
+              <button className="reply-plus-btn" aria-label="Add attachment">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                  <circle cx="10" cy="10" r="8.33" stroke="currentColor" strokeWidth="1.67"/>
+                  <path d="M10 6.67v6.67M6.67 10h6.67" stroke="currentColor" strokeWidth="1.67" strokeLinecap="round"/>
+                </svg>
+              </button>
+              <div className="reply-input-wrap">
+                <input className="reply-input" placeholder={`Message ${firstName}`} />
+                <button className="send-btn" aria-label="Send">
+                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                    <path d="M17.5 2.5L9.17 10.83M17.5 2.5l-5.83 15-3.34-7.5-7.5-3.33L17.5 2.5z" stroke="currentColor" strokeWidth="1.67" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       );
     }
