@@ -1643,26 +1643,6 @@
             </div>
           )}
 
-          {/* Reply bar — only on Conversation tab */}
-          {activeTab === 'conversation' && (
-            <div className="reply-bar">
-              <button className="reply-plus-btn" aria-label="Add attachment">
-                <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                  <circle cx="10" cy="10" r="8.33" stroke="currentColor" strokeWidth="1.67"/>
-                  <path d="M10 6.67v6.67M6.67 10h6.67" stroke="currentColor" strokeWidth="1.67" strokeLinecap="round"/>
-                </svg>
-              </button>
-              <div className="reply-input-wrap">
-                <input className="reply-input" placeholder={`Message ${firstName}`} />
-                <button className="send-btn" aria-label="Send">
-                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                    <path d="M17.5 2.5L9.17 10.83M17.5 2.5l-5.83 15-3.34-7.5-7.5-3.33L17.5 2.5z" stroke="currentColor" strokeWidth="1.67" strokeLinecap="round" strokeLinejoin="round"/>
-                  </svg>
-                </button>
-              </div>
-            </div>
-          )}
-
           {/* Action sheet — all tabs */}
           <div className="action-sheet">
             <button className="action-chip primary">
@@ -1695,6 +1675,26 @@
               )}
             </div>
           </div>
+
+          {/* Reply bar — only on Conversation tab */}
+          {activeTab === 'conversation' && (
+            <div className="reply-bar">
+              <button className="reply-plus-btn" aria-label="Add attachment">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                  <circle cx="10" cy="10" r="8.33" stroke="currentColor" strokeWidth="1.67"/>
+                  <path d="M10 6.67v6.67M6.67 10h6.67" stroke="currentColor" strokeWidth="1.67" strokeLinecap="round"/>
+                </svg>
+              </button>
+              <div className="reply-input-wrap">
+                <input className="reply-input" placeholder={`Message ${firstName}`} />
+                <button className="send-btn" aria-label="Send">
+                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                    <path d="M17.5 2.5L9.17 10.83M17.5 2.5l-5.83 15-3.34-7.5-7.5-3.33L17.5 2.5z" stroke="currentColor" strokeWidth="1.67" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       );
     }
